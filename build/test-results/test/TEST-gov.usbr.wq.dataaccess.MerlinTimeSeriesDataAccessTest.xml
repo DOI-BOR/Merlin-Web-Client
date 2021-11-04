@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="gov.usbr.wq.dataaccess.MerlinTimeSeriesDataAccessTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-11-04T19:25:45" hostname="GHIDORAH" time="0.403">
+  <properties/>
+  <testcase name="getProfiles()" classname="gov.usbr.wq.dataaccess.MerlinTimeSeriesDataAccessTest" time="0.403"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Nov 04, 2021 12:25:45 PM gov.usbr.wq.dataaccess.HttpAccess authenticate
+INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoid2Vic2VydmljZXVzZXIiLCJhZG1pbiI6IkZhbHNlIiwibmJmIjoxNjM2MDUzOTQ1LCJleHAiOjE2MzYwNTc1NDUsImlzcyI6Ik1lcmxpbldlYlNlcnZpY2UiLCJhdWQiOiJNZXJsaW5XZWJTZXJ2aWNlIn0.5n2BnkxiVqPZz1Wu8zUcsXCcN3zIFc1E7OyREtz1QGw
+Nov 04, 2021 12:25:46 PM gov.usbr.wq.dataaccess.MerlinTimeSeriesDataAccessTest getProfiles
+INFO: [{"dprID":24,"dprName":"Shasta Lake - Modeling Flow and Elev."},{"dprID":25,"dprName":"Shasta Lake - Modeling WTemp."}]
+]]></system-err>
+</testsuite>
