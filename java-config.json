@@ -1,0 +1,5 @@
+{
+  "dateLibrary": "java8",
+  "hideGenerationTimestamp": false,
+  "modelPackage": "gov.usbr.wq.dataaccess.model"
+}

@@ -1,21 +1,31 @@
+
 plugins {
     id 'java'
+    id 'org.hidetake.swagger.generator' version '2.18.2'
 }
+
+apply plugin: 'java'
+
 group 'gov.usbr.wq'
 version '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
-}
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
     }
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2')
+    }
+//    maven {
+//        url = uri('https://www.hec.usace.army.mil/nexus/repository/maven-public')
+//    }
 }
 
-apply plugin: 'java'
+
+//apply plugin: 'org.hidetake.swagger.generator'
+
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
@@ -26,9 +36,48 @@ test {
 }
 
 dependencies {
-    compile 'com.squareup.okhttp3:okhttp:4.9.0'
-    compile 'com.auth0:java-jwt:3.18.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-    implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
-    implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'com.auth0:java-jwt:3.18.2'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+//    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:2.3.12.RELEASE'
+    implementation 'io.swagger:swagger-annotations:1.6.3'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.6'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+
+    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.4.23'
 }
+
+swaggerSources {
+    merlin {
+        inputFile = file("merlin-swagger.yaml")
+        code {
+            language = 'spring'
+            components = ['models']
+            configFile = file('java-config.json')
+
+        }
+    }
+}
+
+// Configure compile task dependency and source
+compileJava.dependsOn swaggerSources.merlin.code
+sourceSets.main.java.srcDir "${swaggerSources.merlin.code.outputDir}/src/main/java"
+sourceSets.main.resources.srcDir "${swaggerSources.merlin.code.outputDir}/src/main/resources"
+
+build.dependsOn generateSwaggerCode
+
+//
+//task printSourceSetInformation(){
+//    doLast{
+//        sourceSets.each { srcSet ->
+//            println "["+srcSet.name+"]"
+//            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+//            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+//            println ""
+//        }
+//    }
+//}
+

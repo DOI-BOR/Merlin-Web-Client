@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JwtContainer
+public final class JwtContainer
 {
 	private static final Logger LOGGER = Logger.getLogger(JwtContainer.class.getName());
 	private final String _token;

@@ -5,7 +5,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class HttpAccess
+public final class HttpAccess
 {
 	private static final Logger LOGGER = Logger.getLogger(HttpAccess.class.getName());
 

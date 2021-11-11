@@ -8,7 +8,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class MerlinTimeSeriesDataAccess
+public final class MerlinTimeSeriesDataAccess
 {
 	private static final Logger LOGGER = Logger.getLogger(MerlinTimeSeriesDataAccess.class.getName());
 
@@ -25,6 +25,7 @@ public class MerlinTimeSeriesDataAccess
 		String json = httpAccess.get(getProfilesApi, token);
 		return json;
 	}
+
 
 
 
