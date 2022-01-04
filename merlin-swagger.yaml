@@ -86,7 +86,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Profiles'
+              $ref: '#/definitions/Profile'
   /GetMeasurementsByProfile:
     get:
       tags:
@@ -115,7 +115,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Measures'
+              $ref: '#/definitions/Measure'
   /GetEventsBySeriesString:
     get:
       tags:
@@ -153,7 +153,7 @@ paths:
           schema:
             $ref: '#/definitions/Data'
 definitions:
-  Profiles:
+  Profile:
     description: Public class to define Data Profiles
     type: object
     properties:
@@ -164,7 +164,7 @@ definitions:
       dprName:
         description: Profile Name
         type: string
-  Measures:
+  Measure:
     description: Public class for profile measurement series
     type: object
     properties:
@@ -206,8 +206,8 @@ definitions:
       Events:
         type: array
         items:
-          $ref: '#/definitions/Events'
-  Events:
+          $ref: '#/definitions/Event'
+  Event:
     description: Public class for events
     type: object
     properties:

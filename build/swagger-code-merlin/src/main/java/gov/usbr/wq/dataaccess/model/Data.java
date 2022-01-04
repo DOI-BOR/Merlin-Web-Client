@@ -3,7 +3,7 @@ package gov.usbr.wq.dataaccess.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import gov.usbr.wq.dataaccess.model.Events;
+import gov.usbr.wq.dataaccess.model.Event;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import javax.validation.constraints.*;
  * Data
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-11-15T12:34:03.688-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2022-01-03T13:02:43.852-08:00")
 
 
 public class Data   {
@@ -61,7 +61,7 @@ public class Data   {
 
   @JsonProperty("Events")
   @Valid
-  private List<Events> events = null;
+  private List<Event> events = null;
 
   public Data project(String project) {
     this.project = project;
@@ -323,12 +323,12 @@ public class Data   {
     this.seriesString = seriesString;
   }
 
-  public Data events(List<Events> events) {
+  public Data events(List<Event> events) {
     this.events = events;
     return this;
   }
 
-  public Data addEventsItem(Events eventsItem) {
+  public Data addEventsItem(Event eventsItem) {
     if (this.events == null) {
       this.events = new ArrayList<>();
     }
@@ -344,11 +344,11 @@ public class Data   {
 
   @Valid
 
-  public List<Events> getEvents() {
+  public List<Event> getEvents() {
     return events;
   }
 
-  public void setEvents(List<Events> events) {
+  public void setEvents(List<Event> events) {
     this.events = events;
   }
 

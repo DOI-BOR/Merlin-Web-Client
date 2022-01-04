@@ -1,6 +1,7 @@
 package gov.usbr.wq.dataaccess;
 
-import org.junit.jupiter.api.Assertions;
+import gov.usbr.wq.dataaccess.http.HttpAccess;
+import gov.usbr.wq.dataaccess.jwt.JwtContainer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

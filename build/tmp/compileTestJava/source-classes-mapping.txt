@@ -1,4 +1,4 @@
-gov/usbr/wq/dataaccess/MerlinTimeSeriesDataAccessTest.java
- gov.usbr.wq.dataaccess.MerlinTimeSeriesDataAccessTest
 gov/usbr/wq/dataaccess/HttpAccessTest.java
  gov.usbr.wq.dataaccess.HttpAccessTest
+gov/usbr/wq/dataaccess/MerlinTimeSeriesDataAccessTest.java
+ gov.usbr.wq.dataaccess.MerlinTimeSeriesDataAccessTest
