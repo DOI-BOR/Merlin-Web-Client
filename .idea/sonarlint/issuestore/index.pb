@@ -9,5 +9,3 @@ h
 8src/test/java/gov/usbr/wq/dataaccess/HttpAccessTest.java,6\6\661800c1bdf003c24a0de2d7adf30324c6a9708a
 p
 @src/testfixtures/java/gov/usbr/wq/dataaccess/MockHttpServer.java,1\6\16bb79a6f10c0006f2365fa258ee067f4cc506d4
-@
-java-config.json,e\0\e03da26beda631aba5e439bd7a250724082b88d9

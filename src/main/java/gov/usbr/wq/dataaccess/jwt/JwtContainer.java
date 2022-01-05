@@ -27,12 +27,11 @@ public final class JwtContainer
 		boolean retval = false;
 		try
 		{
-			DecodedJWT decodedJWT = JWT.decode(_token);
-			retval = true;
+			retval = JWT.decode(_token) != null;
 		}
 		catch(JWTDecodeException e)
 		{
-			LOGGER.log(Level.FINE,e,() -> "Invalid token, "+_token);
+			LOGGER.log(Level.SEVERE,e,() -> "Invalid token, "+_token);
 		}
 		return retval;
 	}

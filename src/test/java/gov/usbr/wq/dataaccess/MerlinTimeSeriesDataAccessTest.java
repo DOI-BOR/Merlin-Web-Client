@@ -3,9 +3,9 @@ package gov.usbr.wq.dataaccess;
 import gov.usbr.wq.dataaccess.http.HttpAccess;
 import gov.usbr.wq.dataaccess.http.HttpAccessException;
 import gov.usbr.wq.dataaccess.jwt.JwtContainer;
-import gov.usbr.wq.dataaccess.model.Data;
-import gov.usbr.wq.dataaccess.model.Measure;
-import gov.usbr.wq.dataaccess.model.Profile;
+import gov.usbr.wq.dataaccess.json.Data;
+import gov.usbr.wq.dataaccess.json.Measure;
+import gov.usbr.wq.dataaccess.json.Profile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -69,7 +69,7 @@ public class MerlinTimeSeriesDataAccessTest
 		JwtContainer token = new HttpAccess(HttpAccess.getDefaultWebServiceRoot()).authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<Profile> profiles = dataAccess.getProfiles(token);
-		List<Measure> measurementsByProfile = dataAccess.getMeasurementsByProfile(token, profiles.get(0));
+		List<Measure> measurementsByProfile = dataAccess.getMeasurementsByProfile(token, profiles.get(2));
 		Measure measure = measurementsByProfile.get(0);
 		//		String seriesString = "";
 		//		measure.setSeriesString(seriesString);

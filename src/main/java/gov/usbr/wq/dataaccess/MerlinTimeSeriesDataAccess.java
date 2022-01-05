@@ -4,9 +4,9 @@ import gov.usbr.wq.dataaccess.http.HttpAccessException;
 import gov.usbr.wq.dataaccess.jwt.JwtContainer;
 import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
 import gov.usbr.wq.dataaccess.http.HttpAccess;
-import gov.usbr.wq.dataaccess.model.Data;
-import gov.usbr.wq.dataaccess.model.Measure;
-import gov.usbr.wq.dataaccess.model.Profile;
+import gov.usbr.wq.dataaccess.json.Data;
+import gov.usbr.wq.dataaccess.json.Measure;
+import gov.usbr.wq.dataaccess.json.Profile;
 
 import java.io.IOException;
 import java.time.Instant;
