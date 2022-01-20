@@ -7,13 +7,19 @@ import gov.usbr.wq.dataaccess.http.HttpAccess;
 import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.json.Measure;
 import gov.usbr.wq.dataaccess.json.Profile;
+import gov.usbr.wq.dataaccess.model.DataWrapper;
+import gov.usbr.wq.dataaccess.model.MeasureWrapper;
+import gov.usbr.wq.dataaccess.model.ProfileWrapper;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.stream.Collectors.toList;
 
 public final class MerlinTimeSeriesDataAccess
 {
@@ -23,27 +29,32 @@ public final class MerlinTimeSeriesDataAccess
 	{
 	}
 
-	public List<Profile> getProfiles(JwtContainer token) throws IOException
+	public List<ProfileWrapper> getProfiles(JwtContainer token) throws IOException
 	{
 		HttpAccess httpAccess = new HttpAccess(HttpAccess.getDefaultWebServiceRoot());
 		String api = "/MerlinWebService/GetProfiles";
 		String json = httpAccess.get(api, token);
-		List<Profile> retval = MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Profile.class);
-		return retval;
+		LOGGER.log(Level.FINEST, "getProfiles() JSON:" + System.lineSeparator() + json);
+		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Profile.class).stream()
+								 .map(ProfileWrapper::new)
+								 .collect(toList());
 	}
 
-	public List<Measure> getMeasurementsByProfile(JwtContainer token, Profile profile) throws IOException, HttpAccessException
+	public List<MeasureWrapper> getMeasurementsByProfile(JwtContainer token, ProfileWrapper profile) throws IOException, HttpAccessException
 	{
 		HttpAccess httpAccess = new HttpAccess(HttpAccess.getDefaultWebServiceRoot());
 		String api = "/MerlinWebService/GetMeasurementsByProfile";
-		Integer dprID = profile.getDprID();
+		Integer dprID = profile.getDprId();
 		Map<String, String> queryParams = new HashMap<>();
 		queryParams.put("profileID", String.valueOf(dprID));
 		String json = httpAccess.get(api, token, queryParams);
-		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Measure.class);
+		LOGGER.log(Level.FINEST, "getMeasurementsByProfile(" + profile + ") JSON:" + System.lineSeparator() + json);
+		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Measure.class).stream()
+								 .map(MeasureWrapper::new)
+								 .collect(toList());
 	}
 
-	public Data getEventsBySeries(JwtContainer token, Measure measure, Instant start, Instant end) throws IOException, HttpAccessException
+	public DataWrapper getEventsBySeries(JwtContainer token, MeasureWrapper measure, Instant start, Instant end) throws IOException, HttpAccessException
 	{
 		HttpAccess httpAccess = new HttpAccess(HttpAccess.getDefaultWebServiceRoot());
 		String api = "/MerlinWebService/GetEventsBySeriesString";
@@ -59,6 +70,9 @@ public final class MerlinTimeSeriesDataAccess
 			queryParams.put("endDate", end.toString());
 		}
 		String json = httpAccess.get(api, token, queryParams);
-		return MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class);
+
+		LOGGER.log(Level.FINEST, "getEventsBySeries(" + measure + ", " + "[" + start + ", " + end + "]) JSON:" + System.lineSeparator() + json);
+
+		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class));
 	}
 }
