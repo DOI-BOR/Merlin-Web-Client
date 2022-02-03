@@ -16,8 +16,8 @@ public class Iso8601Support
 			.stream()
 			.map(ZoneId::of)
 			.sorted((o1, o2) -> -1 * o1.getRules().getOffset(newYears).compareTo(o2.getRules().getOffset(newYears)))
-			.map(id -> String.format("%s:%s,%s,%s", hourFormat(id.getRules().getOffset(newYears).getTotalSeconds() / 3600), minuteFormat(Math.abs(id.getRules().getOffset(newYears).getTotalSeconds() % 3600 / 60)),
-				id.getId(), id.getRules().isDaylightSavings(newYears)))
+			.map(id -> String.format("%s:%s,%s,%s", hourFormat(id.getRules().getOffset(newYears).getTotalSeconds() / 3600),
+				minuteFormat(Math.abs(id.getRules().getOffset(newYears).getTotalSeconds() % 3600 / 60)), id.getId(), id.getRules().getTransitions().size() > 1))
 			.forEach(s -> System.out.println(s));
 
 	}
@@ -26,7 +26,7 @@ public class Iso8601Support
 	{
 		if (i >= 0 && i < 10)
 		{
-			return "0"+String.format("%d", i);
+			return "0" + String.format("%d", i);
 		}
 		else
 		{
@@ -38,19 +38,19 @@ public class Iso8601Support
 	{
 		if (i <= -10)
 		{
-			return "-"+String.format("%2d", Math.abs(i));
+			return "-" + String.format("%2d", Math.abs(i));
 		}
 		else if (i < 0 && i > -10)
 		{
-			return "-0"+String.format("%d", Math.abs(i));
+			return "-0" + String.format("%d", Math.abs(i));
 		}
 		else if (i >= 0 && i < 10)
 		{
-			return "+0"+String.format("%d", i);
+			return "+0" + String.format("%d", i);
 		}
 		else
 		{
-			return "+"+String.format("%2d", i);
+			return "+" + String.format("%2d", i);
 		}
 	}
 }
