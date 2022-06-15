@@ -212,7 +212,6 @@ definitions:
     type: object
     properties:
       Date:
-        format: date-time
         description: Event Date
         type: string
       Value:

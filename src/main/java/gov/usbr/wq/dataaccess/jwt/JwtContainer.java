@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class JwtContainer implements TokenContainer
+public final class JwtContainer
 {
 	private static final Logger LOGGER = Logger.getLogger(JwtContainer.class.getName());
 	private final String _token;
@@ -17,13 +17,11 @@ public final class JwtContainer implements TokenContainer
 		_token = token;
 	}
 
-	@Override
 	public String getToken()
 	{
 		return _token;
 	}
 
-	@Override
 	public boolean isValid()
 	{
 		boolean retval = false;
