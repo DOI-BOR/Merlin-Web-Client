@@ -89,14 +89,14 @@ public class HttpAccessUtils
 		return getRequestBodyString(request);
 	}
 
-	static String getJson(TokenContainer token, String api) throws HttpAccessException
+	static String getJsonWithToken(TokenContainer token, String api) throws HttpAccessException
 	{
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(WEB_SERVICE_ROOT + api).newBuilder();
 		urlBuilder.addQueryParameter("token", token.getToken());
-		return getJson(urlBuilder);
+		return getJsonWithUrlBuilder(urlBuilder);
 	}
 
-	private static String getJson(HttpUrl.Builder urlBuilder) throws HttpAccessException
+	private static String getJsonWithUrlBuilder(HttpUrl.Builder urlBuilder) throws HttpAccessException
 	{
 		String url = urlBuilder.build().toString();
 		Request request = new Request.Builder().url(url).build();
@@ -123,12 +123,12 @@ public class HttpAccessUtils
 		}
 	}
 
-	static String getJson(TokenContainer token, String api, Map<String, String> queryParams) throws HttpAccessException
+	static String getJsonWithToken(TokenContainer token, String api, Map<String, String> queryParams) throws HttpAccessException
 	{
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(WEB_SERVICE_ROOT + api).newBuilder();
 		urlBuilder.addQueryParameter("token", token.getToken());
 		queryParams.forEach(urlBuilder::addQueryParameter);
-		return getJson(urlBuilder);
+		return getJsonWithUrlBuilder(urlBuilder);
 	}
 
 	public static Access buildHttpAccess()

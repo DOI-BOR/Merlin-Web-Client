@@ -28,14 +28,14 @@ final class HttpAccess implements Access
 		String api = "/MerlinWebService/GetMeasurementsByProfile";
 		Map<String, String> queryParams = new HashMap<>();
 		queryParams.put("profileID", String.valueOf(profileId));
-		return HttpAccessUtils.getJson(token, api, queryParams);
+		return HttpAccessUtils.getJsonWithToken(token, api, queryParams);
 	}
 
 	@Override
 	public String getJsonProfiles(TokenContainer token) throws HttpAccessException
 	{
 		String api = "/MerlinWebService/GetProfiles";
-		return HttpAccessUtils.getJson(token, api);
+		return HttpAccessUtils.getJsonWithToken(token, api);
 	}
 
 	@Override
@@ -52,6 +52,6 @@ final class HttpAccess implements Access
 		{
 			queryParams.put("endDate", end.toString());
 		}
-		return HttpAccessUtils.getJson(token, api, queryParams);
+		return HttpAccessUtils.getJsonWithToken(token, api, queryParams);
 	}
 }
