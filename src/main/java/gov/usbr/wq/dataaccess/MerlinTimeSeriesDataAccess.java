@@ -1,10 +1,18 @@
+/*
+ * Copyright 2022 United States Bureau of Reclamation (USBR).
+ * United States Department of the Interior
+ * All Rights Reserved. USBR PROPRIETARY/CONFIDENTIAL.
+ * Source may not be released without written approval
+ * from USBR.
+ */
+
 package gov.usbr.wq.dataaccess;
 
 import gov.usbr.wq.dataaccess.http.Access;
 import gov.usbr.wq.dataaccess.http.HttpAccessException;
+import gov.usbr.wq.dataaccess.http.HttpAccessUtils;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
-import gov.usbr.wq.dataaccess.http.HttpAccess;
 import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.json.Measure;
 import gov.usbr.wq.dataaccess.json.Profile;
@@ -15,7 +23,6 @@ import gov.usbr.wq.dataaccess.model.ProfileWrapper;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +37,7 @@ public final class MerlinTimeSeriesDataAccess
 
 	public MerlinTimeSeriesDataAccess()
 	{
-		this(HttpAccess::new);
+		this(HttpAccessUtils::buildHttpAccess);
 	}
 
 	public MerlinTimeSeriesDataAccess(Supplier<Access> accessBuilder)

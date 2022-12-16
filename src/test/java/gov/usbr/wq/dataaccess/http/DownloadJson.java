@@ -35,8 +35,7 @@ class DownloadJson
 	static final Path MEASUREMENTS_JSON_PATH = RESOURCES_PATH.resolve("measurements");
 	static final Path EVENTS_JSON_PATH = RESOURCES_PATH.resolve("events");
 
-	//@Test  //Remove the comment and run this to update our local JSON resources
-	void downloadJson() throws Exception
+	public static void main(String[] args) throws Exception
 	{
 		HttpAccess access = new HttpAccess();
 		TokenContainer token = HttpAccessUtils.authenticate(ResourceAccess.getUsername(), ResourceAccess.getPassword());
@@ -50,7 +49,7 @@ class DownloadJson
 		profileList.forEach(profile -> storeMeasurements(profile, token, access));
 	}
 
-	private void storeMeasurements(Profile profile, TokenContainer token, Access access)
+	private static void storeMeasurements(Profile profile, TokenContainer token, Access access)
 	{
 		String measurementsJson;
 		try
@@ -82,7 +81,7 @@ class DownloadJson
 		}
 	}
 
-	private void storeEvents(Measure measure, Profile profile, TokenContainer token, Access access)
+	private static void storeEvents(Measure measure, Profile profile, TokenContainer token, Access access)
 	{
 		try
 		{

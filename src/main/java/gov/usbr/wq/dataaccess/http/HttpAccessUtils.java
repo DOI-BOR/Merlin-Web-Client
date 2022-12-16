@@ -18,7 +18,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -75,7 +74,6 @@ public class HttpAccessUtils
 		{
 			tokenString = tokenString.replaceAll("\"", "");
 		}
-		LOGGER.info(tokenString);
 		return new JwtContainer(tokenString);
 	}
 
@@ -142,5 +140,10 @@ public class HttpAccessUtils
 		urlBuilder.addQueryParameter("token", token.getToken());
 		queryParams.forEach(urlBuilder::addQueryParameter);
 		return getJson(urlBuilder);
+	}
+
+	public static Access buildHttpAccess()
+	{
+		return new HttpAccess();
 	}
 }

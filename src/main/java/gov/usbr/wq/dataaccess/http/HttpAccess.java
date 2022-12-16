@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public final class HttpAccess implements Access
+final class HttpAccess implements Access
 {
 
-	public HttpAccess()
+	HttpAccess()
 	{
 
 	}
