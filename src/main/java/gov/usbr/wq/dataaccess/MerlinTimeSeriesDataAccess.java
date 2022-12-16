@@ -73,6 +73,6 @@ public final class MerlinTimeSeriesDataAccess
 
 		LOGGER.log(Level.FINEST, () -> "getEventsBySeries(" + measure + ", " + "[" + start + ", " + end + "]) JSON:" + System.lineSeparator() + json);
 
-		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class));
+		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class), start, end);
 	}
 }

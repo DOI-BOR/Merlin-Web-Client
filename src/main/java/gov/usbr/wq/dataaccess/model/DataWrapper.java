@@ -11,6 +11,7 @@ package gov.usbr.wq.dataaccess.model;
 import gov.usbr.wq.dataaccess.json.Data;
 
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -33,10 +34,15 @@ public final class DataWrapper
 	private final Data _data;
 	private final NavigableSet<EventWrapper> _events = new TreeSet<>();
 	private final ZoneId _zoneId;
+	private final Instant _startRetrievalTime;
+	private final Instant _endRetrievalTime;
 
-	public DataWrapper(Data data)
+
+	public DataWrapper(Data data, Instant startRetrievalTime, Instant endRetrievalTime)
 	{
 		_data = data;
+		_startRetrievalTime = startRetrievalTime;
+		_endRetrievalTime = endRetrievalTime;
 		ZoneId zoneId = ZoneId.of("UTC");
 		if (data.getTimeZone() != null)
 		{
@@ -72,7 +78,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getStartTime()
 	{
-		ZonedDateTime output = LocalDateTime.MIN.atZone(getTimeZone());
+		ZonedDateTime output = _startRetrievalTime.atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{
@@ -84,7 +90,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getEndTime()
 	{
-		ZonedDateTime output = LocalDateTime.MAX.atZone(getTimeZone());
+		ZonedDateTime output = _endRetrievalTime.atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{
