@@ -11,9 +11,9 @@ package gov.usbr.wq.dataaccess.http;
 public class HttpAccessException extends Exception
 {
 
-	public HttpAccessException(int code, String body)
+	public HttpAccessException(int code, String url, String body)
 	{
-		super(constructMessage(code, body));
+		super(constructMessage(code, url, body));
 	}
 
 	public HttpAccessException(Exception ex)
@@ -21,8 +21,8 @@ public class HttpAccessException extends Exception
 		super(ex);
 	}
 
-	private static String constructMessage(int code, String body)
+	private static String constructMessage(int code, String url, String body)
 	{
-		return "Code: " + code + ". Body: " + body;
+		return "URL:" + url + System.lineSeparator() + "Code: " + code + System.lineSeparator() + "Body: " + body;
 	}
 }

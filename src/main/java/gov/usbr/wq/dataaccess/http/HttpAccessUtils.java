@@ -119,7 +119,12 @@ public class HttpAccessUtils
 			}
 			else
 			{
-				throw new HttpAccessException(response.code(), response.body().string());
+				String body = "";
+				if (response.body() != null)
+				{
+					body = response.toString();
+				}
+				throw new HttpAccessException(response.code(), scheme + "://" + host + "/" + path, body);
 			}
 		}
 		catch (IOException ex)
