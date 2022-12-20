@@ -1,28 +1,52 @@
+/*
+ * Copyright 2022 United States Bureau of Reclamation (USBR).
+ * United States Department of the Interior
+ * All Rights Reserved. USBR PROPRIETARY/CONFIDENTIAL.
+ * Source may not be released without written approval
+ * from USBR.
+ */
+
 package gov.usbr.wq.dataaccess.http;
 
-public final class HttpAccessException extends Throwable
+public class HttpAccessException extends Exception
 {
 	private final int _code;
+	private final String _url;
 	private final String _body;
 
-	public HttpAccessException(int code, String body)
+	public HttpAccessException(int code, String url, String body)
 	{
+		super(constructMessage(code, url, body));
 		_code = code;
+		_url = url;
 		_body = body;
 	}
 
-	public int code()
+	public HttpAccessException(Exception ex)
+	{
+		super(ex);
+		_code = 0;
+		_url = null;
+		_body = null;
+	}
+
+	private static String constructMessage(int code, String url, String body)
+	{
+		return "URL:" + url + System.lineSeparator() + "Code: " + code + System.lineSeparator() + "Body: " + body;
+	}
+
+	public int getCode()
 	{
 		return _code;
 	}
-	public String body()
+
+	public String getUrl()
 	{
-		return _body;
+		return _url;
 	}
 
-	@Override
-	public String getMessage()
+	public String getBody()
 	{
-		return "Code: "+code()+". Body: "+body();
+		return _body;
 	}
 }
