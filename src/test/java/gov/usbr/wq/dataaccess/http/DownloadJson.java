@@ -9,9 +9,9 @@
 package gov.usbr.wq.dataaccess.http;
 
 import gov.usbr.wq.dataaccess.ResourceAccess;
+import gov.usbr.wq.dataaccess.json.Template;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import gov.usbr.wq.dataaccess.json.Measure;
-import gov.usbr.wq.dataaccess.json.Profile;
 import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
 
 import java.nio.charset.StandardCharsets;
@@ -31,7 +31,7 @@ class DownloadJson
 {
 	private static final Logger LOGGER = Logger.getLogger(HttpAccessTest.class.getName());
 	private static final Path RESOURCES_PATH = Paths.get("").toAbsolutePath().resolve("src/test/resources");
-	static final Path PROFILES_JSON_PATH = RESOURCES_PATH.resolve("profiles.json");
+	static final Path TEMPLATE_JSON_PATH = RESOURCES_PATH.resolve("Templates.json");
 	static final Path MEASUREMENTS_JSON_PATH = RESOURCES_PATH.resolve("measurements");
 	static final Path EVENTS_JSON_PATH = RESOURCES_PATH.resolve("events");
 
@@ -39,23 +39,23 @@ class DownloadJson
 	{
 		HttpAccess access = new HttpAccess();
 		TokenContainer token = HttpAccessUtils.authenticate(ResourceAccess.getUsername(), ResourceAccess.getPassword());
-		String profiles = access.getJsonProfiles(token);
-		Path profilesFile = PROFILES_JSON_PATH;
-		Files.deleteIfExists(profilesFile);
-		Files.write(profilesFile, Collections.singleton(profiles), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+		String templates = access.getJsonTemplates(token);
+		Path templatesFile = TEMPLATE_JSON_PATH;
+		Files.deleteIfExists(templatesFile);
+		Files.write(templatesFile, Collections.singleton(templates), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
 
-		List<Profile> profileList = MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(profiles, Profile.class);
+		List<Template> templateList = MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(templates, Template.class);
 
-		profileList.forEach(profile -> storeMeasurements(profile, token, access));
+		templateList.forEach(template -> storeMeasurements(template, token, access));
 	}
 
-	private static void storeMeasurements(Profile profile, TokenContainer token, Access access)
+	private static void storeMeasurements(Template template, TokenContainer token, Access access)
 	{
 		String measurementsJson;
 		try
 		{
-			measurementsJson = access.getJsonMeasurementsByProfileId(token, profile.getDprID());
-			Path measurementPath = MEASUREMENTS_JSON_PATH.resolve(profile.getDprName() + ".json");
+			measurementsJson = access.getJsonMeasurementsByTemplateId(token, template.getDprID());
+			Path measurementPath = MEASUREMENTS_JSON_PATH.resolve(template.getDprName() + ".json");
 			if (!Files.exists(measurementPath))
 			{
 				Files.createDirectories(MEASUREMENTS_JSON_PATH);
@@ -65,14 +65,14 @@ class DownloadJson
 		}
 		catch(Exception ex)
 		{
-			LOGGER.log(Level.SEVERE, "Unable to retrieve measurements from profile " + profile.getDprName(), ex);
+			LOGGER.log(Level.SEVERE, "Unable to retrieve measurements from template " + template.getDprName(), ex);
 			return;
 		}
 
 		try
 		{
 			List<Measure> measures = MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(measurementsJson, Measure.class);
-			measures.forEach(measure -> storeEvents(measure, profile, token, access));
+			measures.forEach(measure -> storeEvents(measure, template, token, access));
 		}
 		catch (Exception ex)
 		{
@@ -81,12 +81,12 @@ class DownloadJson
 		}
 	}
 
-	private static void storeEvents(Measure measure, Profile profile, TokenContainer token, Access access)
+	private static void storeEvents(Measure measure, Template template, TokenContainer token, Access access)
 	{
 		try
 		{
-			String eventsJson = access.getJsonEventsBySeries(token, measure.getSeriesString(), null, null);
-			Path eventPath = EVENTS_JSON_PATH.resolve(profile.getDprName());
+			String eventsJson = access.getJsonEventsBySeries(token, measure.getSeriesString(), null, null, null);
+			Path eventPath = EVENTS_JSON_PATH.resolve(template.getDprName());
 			if (!Files.exists(eventPath))
 			{
 				Files.createDirectories(eventPath);

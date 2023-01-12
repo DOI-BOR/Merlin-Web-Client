@@ -23,23 +23,23 @@ final class HttpAccess implements Access
 	}
 
 	@Override
-	public String getJsonMeasurementsByProfileId(TokenContainer token, Integer profileId) throws HttpAccessException
+	public String getJsonMeasurementsByTemplateId(TokenContainer token, Integer templateId) throws HttpAccessException
 	{
-		String api = "/MerlinWebService/GetMeasurementsByProfile";
+		String api = "/MerlinWebService/GetMeasurementsByTemplate";
 		Map<String, String> queryParams = new HashMap<>();
-		queryParams.put("profileID", String.valueOf(profileId));
+		queryParams.put("templateID", String.valueOf(templateId));
 		return HttpAccessUtils.getJsonWithToken(token, api, queryParams);
 	}
 
 	@Override
-	public String getJsonProfiles(TokenContainer token) throws HttpAccessException
+	public String getJsonTemplates(TokenContainer token) throws HttpAccessException
 	{
-		String api = "/MerlinWebService/GetProfiles";
+		String api = "/MerlinWebService/GetTemplates";
 		return HttpAccessUtils.getJsonWithToken(token, api);
 	}
 
 	@Override
-	public String getJsonEventsBySeries(TokenContainer token, String seriesString, Instant start, Instant end) throws HttpAccessException
+	public String getJsonEventsBySeries(TokenContainer token, String seriesString, Integer qualityVersionID, Instant start, Instant end) throws HttpAccessException
 	{
 		String api = "/MerlinWebService/GetEventsBySeriesString";
 		Map<String, String> queryParams = new HashMap<>();
@@ -52,6 +52,17 @@ final class HttpAccess implements Access
 		{
 			queryParams.put("endDate", end.toString());
 		}
+		if(qualityVersionID != null)
+		{
+			queryParams.put("qvID", qualityVersionID.toString());
+		}
 		return HttpAccessUtils.getJsonWithToken(token, api, queryParams);
+	}
+
+	@Override
+	public String getJsonQualityVersions(TokenContainer token) throws HttpAccessException
+	{
+		String api = "/MerlinWebService/GetQualityVersions";
+		return HttpAccessUtils.getJsonWithToken(token, api);
 	}
 }

@@ -10,10 +10,12 @@ package gov.usbr.wq.dataaccess;
 
 import gov.usbr.wq.dataaccess.http.HttpAccessException;
 import gov.usbr.wq.dataaccess.http.HttpAccessUtils;
+import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import gov.usbr.wq.dataaccess.model.DataWrapper;
 import gov.usbr.wq.dataaccess.model.MeasureWrapper;
-import gov.usbr.wq.dataaccess.model.ProfileWrapper;
+import gov.usbr.wq.dataaccess.model.QualityVersionsWrapper;
+import gov.usbr.wq.dataaccess.model.TemplateWrapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -26,46 +28,48 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class MerlinTimeSeriesDataAccessTest
 {
 
 	private static final Logger LOGGER = Logger.getLogger(MerlinTimeSeriesDataAccessTest.class.getName());
-
+	private static final List<Integer> INTERNAL_SERVER_ERROR_DPR_LIST = Arrays.asList(54);
 	@Test
-	void getProfiles() throws IOException, HttpAccessException
+	void getTemplates() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
 		String password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
-		List<ProfileWrapper> profiles = dataAccess.getProfiles(token);
-		Assertions.assertNotNull(profiles);
-		LOGGER.info(profiles.toString());
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
+		assertNotNull(templates);
+		LOGGER.info(templates.toString());
 	}
 
 	@Test
-	void getMeasurementsByProfile() throws IOException, HttpAccessException
+	void getMeasurementsByTemplate() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
 		String password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
-		List<ProfileWrapper> profiles = dataAccess.getProfiles(token);
-		Map<ProfileWrapper, List<MeasureWrapper>> measures = new HashMap<>();
-		for (ProfileWrapper profile : profiles)
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
+		Map<TemplateWrapper, List<MeasureWrapper>> measures = new HashMap<>();
+		for (TemplateWrapper template : templates)
 		{
 			try
 			{
-				List<MeasureWrapper> measurementsByProfile = dataAccess.getMeasurementsByProfile(token, profile);
-				measures.put(profile, measurementsByProfile);
+				List<MeasureWrapper> measurementsByTemplate = dataAccess.getMeasurementsByTemplate(token, template);
+				measures.put(template, measurementsByTemplate);
 			}
 			catch (HttpAccessException e)
 			{
-				LOGGER.log(Level.SEVERE, e, () -> "Error retrieving measurements for profile: " + profile);
+				LOGGER.log(Level.SEVERE, e, () -> "Error retrieving measurements for template: " + template);
 			}
 		}
 		Assertions.assertTrue(!measures.isEmpty());
-		measures.values().stream().forEach(e -> Assertions.assertNotNull(e));
+		measures.values().stream().forEach(e -> assertNotNull(e));
 		LOGGER.info(measures.toString());
 	}
 
@@ -76,15 +80,51 @@ class MerlinTimeSeriesDataAccessTest
 		String password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
-		List<ProfileWrapper> profiles = dataAccess.getProfiles(token);
-		List<MeasureWrapper> measurementsByProfile = dataAccess.getMeasurementsByProfile(token, profiles.get(2));
-		MeasureWrapper measure = measurementsByProfile.get(0);
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
+		List<MeasureWrapper> measurementsByTemplate = dataAccess.getMeasurementsByTemplate(token, templates.get(2));
+		MeasureWrapper measure = measurementsByTemplate.get(0);
 		//		String seriesString = "";
 		//		measure.setSeriesString(seriesString);
 		Instant start = Instant.parse("2019-01-01T08:00:00.00Z");
 		Instant end = Instant.parse("2020-01-01T08:00:00.00Z");
 		DataWrapper eventsBySeries = dataAccess.getEventsBySeries(token, measure, start, end);
+		assertNotNull(eventsBySeries, "Failed to retrieve events by series");
 		LOGGER.info(eventsBySeries.toString());
+	}
+
+	@Test
+	void getEventsBySeriesWithQV() throws IOException, HttpAccessException
+	{
+		String username = ResourceAccess.getUsername();
+		String password = ResourceAccess.getPassword();
+		TokenContainer token = HttpAccessUtils.authenticate(username, password);
+		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
+		List<MeasureWrapper> measurementsByTemplate = dataAccess.getMeasurementsByTemplate(token, templates.get(2));
+		MeasureWrapper measure = measurementsByTemplate.get(0);
+		//		String seriesString = "";
+		//		measure.setSeriesString(seriesString);
+		Instant start = Instant.parse("2019-01-01T08:00:00.00Z");
+		Instant end = Instant.parse("2020-01-01T08:00:00.00Z");
+		List<QualityVersionsWrapper> qvs = dataAccess.getQualityVersions(token);
+		for(QualityVersionsWrapper qv : qvs)
+		{
+			DataWrapper eventsBySeries = dataAccess.getEventsBySeries(token, measure, qv.getQvID(), start, end);
+			assertNotNull(eventsBySeries, "Failed to retrieve events by series with QV: " + qv.getQvID());
+			LOGGER.info(eventsBySeries.toString());
+		}
+	}
+
+	@Test
+	void getQualityVersions() throws HttpAccessException
+	{
+		String username = ResourceAccess.getUsername();
+		String password = ResourceAccess.getPassword();
+		TokenContainer token = HttpAccessUtils.authenticate(username, password);
+		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
+		List<QualityVersionsWrapper> qualityVersions = assertDoesNotThrow(() -> dataAccess.getQualityVersions(token), "Failed to retrieve quality versions");
+		assertNotNull(qualityVersions, "Failed to retrieve Quality Versions");
+		LOGGER.info(qualityVersions.toString());
 	}
 
 	@Test
@@ -94,23 +134,23 @@ class MerlinTimeSeriesDataAccessTest
 		String password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
-		List<ProfileWrapper> profiles = dataAccess.getProfiles(token);
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
 
 		Instant start = ZonedDateTime.now().withYear(2019).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
 		Instant end = ZonedDateTime.now().withYear(2019).withDayOfYear(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
-		List<Pair<ProfileWrapper, Map<MeasureWrapper, DataWrapper>>> collect = profiles.stream()
-			.map((p) -> CompletableFuture.supplyAsync(() -> asyncMeasuresByProfile(dataAccess, token, p)))
+		List<Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>>> collect = templates.stream()
+			.map((p) -> CompletableFuture.supplyAsync(() -> asyncMeasuresByTemplate(dataAccess, token, p)))
 			.map((f) -> f.thenApplyAsync((p) -> asyncMeasureListToData(dataAccess, token, p, start, end)))
 			.map(f -> f.join())
 			.collect(Collectors.toList());
 		Assertions.assertTrue(!collect.isEmpty());
 
-		long profileCount = collect.stream()
+		long templateCount = collect.stream()
 			.map( Pair::a)
 			.filter(Objects::nonNull)
 			.count();
 
-		LOGGER.info(() -> "Profile count: "+profileCount);
+		LOGGER.info(() -> "Template count: "+templateCount);
 
 		long measureCount = collect.stream()
 			.map( Pair::b)
@@ -132,28 +172,85 @@ class MerlinTimeSeriesDataAccessTest
 
 	}
 
-	private Pair<ProfileWrapper, List<MeasureWrapper>> asyncMeasuresByProfile(MerlinTimeSeriesDataAccess dataAccess, TokenContainer token, ProfileWrapper p)
+	@Test
+	void getEventsBySeriesWithQVMultiThread() throws IOException, HttpAccessException
 	{
-		List<MeasureWrapper> retval;
+		String username = ResourceAccess.getUsername();
+		String password = ResourceAccess.getPassword();
+		TokenContainer token = HttpAccessUtils.authenticate(username, password);
+		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
+		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
+		int qvID = 0;
+		Instant start = ZonedDateTime.now().withYear(2019).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant end = ZonedDateTime.now().withYear(2019).withDayOfYear(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		List<Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>>> collect = templates.stream()
+				.map((p) -> CompletableFuture.supplyAsync(() -> asyncMeasuresByTemplate(dataAccess, token, p)))
+				.map((f) -> f.thenApplyAsync((p) -> asyncMeasureListToDataWithQV(dataAccess, token, p, qvID, start, end)))
+				.map(f -> f.join())
+				.collect(Collectors.toList());
+		Assertions.assertTrue(!collect.isEmpty());
+
+		long templateCount = collect.stream()
+				.map( Pair::a)
+				.filter(Objects::nonNull)
+				.count();
+
+		LOGGER.info(() -> "Template count: "+templateCount);
+
+		long measureCount = collect.stream()
+				.map( Pair::b)
+				.map(Map::keySet)
+				.flatMap(Set::stream)
+				.count();
+		LOGGER.info(() -> "Measure count: "+measureCount);
+
+		long pointsOfData = collect.stream()
+				.map( Pair::b)
+				.map(Map::values)
+				.flatMap(Collection::stream)
+				.filter(Objects::nonNull)
+				.map(DataWrapper::getEvents)
+				.filter(Objects::nonNull)
+				.mapToLong(Collection::size)
+				.sum();
+		LOGGER.info(() -> "Points of data retrieved: "+pointsOfData);
+
+	}
+
+	private Pair<TemplateWrapper, List<MeasureWrapper>> asyncMeasuresByTemplate(MerlinTimeSeriesDataAccess dataAccess, TokenContainer token, TemplateWrapper p)
+	{
+		List<MeasureWrapper> retval = Collections.emptyList();
 		try
 		{
-			retval = dataAccess.getMeasurementsByProfile(token, p);
+			if(!INTERNAL_SERVER_ERROR_DPR_LIST.contains(p.getDprId())) //temp until issue can be resolved with the dpr id, appears to be issue on server end, but isn't important for purposes of this unit test
+			{
+				retval = dataAccess.getMeasurementsByTemplate(token, p);
+			}
 		}
 		catch (IOException | HttpAccessException e)
 		{
-			LOGGER.log(Level.WARNING, e, () -> "Error retrieving measures for profile: " + p);
-			retval = Collections.emptyList();
+			LOGGER.log(Level.WARNING, e, () -> "Error retrieving measures for template: " + p);
 		}
 		return new Pair<>(p, retval);
 	}
 
-	private Pair<ProfileWrapper, Map<MeasureWrapper, DataWrapper>> asyncMeasureListToData(MerlinTimeSeriesDataAccess dataAccess, TokenContainer token, Pair<ProfileWrapper, List<MeasureWrapper>> p, Instant start, Instant end)
+	private Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>> asyncMeasureListToData(MerlinTimeSeriesDataAccess dataAccess, TokenContainer token, Pair<TemplateWrapper, List<MeasureWrapper>> p, Instant start, Instant end)
 	{
 		Map<MeasureWrapper, DataWrapper> collect = p.b()
 			.stream()
 			.map(m -> CompletableFuture.supplyAsync(() -> asyncDataByMeasure(token, dataAccess, m, start, end)))
 			.map(f -> f.join())
 			.collect(Collectors.toMap(Pair::a, Pair::b));
+		return new Pair<>(p.a(), collect);
+	}
+
+	private Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>> asyncMeasureListToDataWithQV(MerlinTimeSeriesDataAccess dataAccess, TokenContainer token, Pair<TemplateWrapper, List<MeasureWrapper>> p, Integer qvID, Instant start, Instant end)
+	{
+		Map<MeasureWrapper, DataWrapper> collect = p.b()
+				.stream()
+				.map(m -> CompletableFuture.supplyAsync(() -> asyncDataByMeasureWithQV(token, dataAccess, m, qvID, start, end)))
+				.map(f -> f.join())
+				.collect(Collectors.toMap(Pair::a, Pair::b));
 		return new Pair<>(p.a(), collect);
 	}
 
@@ -166,8 +263,31 @@ class MerlinTimeSeriesDataAccessTest
 		}
 		catch (IOException | HttpAccessException e)
 		{
-			LOGGER.log(Level.WARNING, e, () -> "Error retrieving data for measure: " + measure);
-			eventsBySeries = null;
+			eventsBySeries =  new DataWrapper(new Data(), null, null);
+			if(!(e instanceof HttpAccessException) || ((HttpAccessException)e).getCode() != 403) //ignore 403 error which seems to be a special case where test user doesn't have permissions, as that is out of scope of this unit test
+			{
+				eventsBySeries = null;
+				LOGGER.log(Level.WARNING, e, () -> "Error retrieving data for measure: " + measure);
+			}
+		}
+		return new Pair<>(measure, eventsBySeries);
+	}
+
+	private Pair<MeasureWrapper, DataWrapper> asyncDataByMeasureWithQV(TokenContainer token, MerlinTimeSeriesDataAccess dataAccess, MeasureWrapper measure, Integer qvID, Instant start, Instant end)
+	{
+		DataWrapper eventsBySeries;
+		try
+		{
+			eventsBySeries = dataAccess.getEventsBySeries(token, measure, qvID, start, end);
+		}
+		catch (IOException | HttpAccessException e)
+		{
+			eventsBySeries =  new DataWrapper(new Data(), null, null);
+			if(!(e instanceof HttpAccessException) || ((HttpAccessException)e).getCode() != 403) //ignore 403 error which seems to be a special case where test user doesn't have permissions in some case
+			{
+				eventsBySeries = null;
+				LOGGER.log(Level.WARNING, e, () -> "Error retrieving data for measure: " + measure);
+			}
 		}
 		return new Pair<>(measure, eventsBySeries);
 	}

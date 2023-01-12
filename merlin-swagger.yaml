@@ -12,7 +12,7 @@ paths:
     post:
       tags:
         - Account
-      summary: Supply Merlin credentials to generate a key for the Web Service.
+      summary: "Supply Merlin credentials to generate a JSON Web Token for the Web Service. The token will be used to authorize each call, and will be passed as a parameter to \r\neach call. The token will determine what level of access you have for the rest of the calls. The token will be valid for 60 minutes at the time of generation."
       operationId: Account_GenerateJSONWebToken
       consumes: []
       produces:
@@ -63,12 +63,12 @@ paths:
           description: OK
           schema:
             type: boolean
-  /GetProfiles:
+  /GetTemplates:
     get:
       tags:
-        - Profiles
-      summary: Retrieves profiles by user
-      operationId: Profiles_Get
+        - Templates
+      summary: Retrieves all templates that are accessible by the user. The template details show the ID and name of the template.
+      operationId: Templates_Get
       consumes: []
       produces:
         - application/json
@@ -86,13 +86,13 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Profile'
-  /GetMeasurementsByProfile:
+              $ref: '#/definitions/Template'
+  /GetMeasurementsByTemplate:
     get:
       tags:
-        - Profiles
-      summary: Retrieves measurements by profile
-      operationId: Profiles_GetMeasuresByProfile
+        - Templates
+      summary: Retrieves measurements by template. This call will also generate series strings for each measurement.
+      operationId: Templates_GetMeasuresByTemplate
       consumes: []
       produces:
         - application/json
@@ -104,7 +104,7 @@ paths:
           in: query
           required: true
           type: string
-        - name: profileID
+        - name: templateID
           in: query
           required: true
           type: integer
@@ -116,11 +116,35 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Measure'
+  /GetQualityVersions:
+    get:
+      tags:
+        - Values
+      summary: Retrieves Quality Version details such as name and ID. Quality Versions can be used to query different revisions stored in Events based on Quality Codes.
+      operationId: Values_Get
+      consumes: []
+      produces:
+        - application/json
+        - text/json
+        - application/xml
+        - text/xml
+      parameters:
+        - name: token
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/QualityVersions'
   /GetEventsBySeriesString:
     get:
       tags:
         - Values
-      summary: Retrieves events by series string
+      summary: "Retrieves events by series string. Series string can be generated from the GetMeasuresByTemplate call. Quality Version can be entered as a parameter which selects\r\nevents based on their groupings of Quality Codes. These groupings are defined in Merlin Enterprise. The defined groupings are Validation/Calibration data or Boundary\r\nCondition data. Note that some data will not have any Val/Cal data because it is completely synthesized. The events that will be pulled will be the latest revision of \r\nevents that fall under the queried Quality Version."
       operationId: Values_GetEventsByTypeID
       consumes: []
       produces:
@@ -137,6 +161,11 @@ paths:
           in: query
           required: true
           type: string
+        - name: qvID
+          in: query
+          required: false
+          type: integer
+          format: int32
         - name: startDate
           in: query
           required: false
@@ -153,7 +182,7 @@ paths:
           schema:
             $ref: '#/definitions/Data'
 definitions:
-  Profile:
+  Template:
     description: Public class to define Data Profiles
     type: object
     properties:
@@ -165,7 +194,7 @@ definitions:
         description: Profile Name
         type: string
   Measure:
-    description: Public class for profile measurement series
+    description: Public class for template measurement series
     type: object
     properties:
       typID:
@@ -174,6 +203,23 @@ definitions:
       seriesString:
         description: Series name
         type: string
+  QualityVersions:
+    type: object
+    properties:
+      qvID:
+        format: int32
+        type: integer
+      qvName:
+        type: string
+      qvDescription:
+        type: string
+      qvActive:
+        type: boolean
+      qvQueryHistory:
+        type: boolean
+      qvUI:
+        format: int32
+        type: integer
   Data:
     type: object
     properties:

@@ -8,7 +8,7 @@
 
 package gov.usbr.wq.dataaccess.model;
 
-import gov.usbr.wq.dataaccess.json.Profile;
+import gov.usbr.wq.dataaccess.json.Template;
 
 import java.util.Objects;
 
@@ -16,23 +16,23 @@ import java.util.Objects;
  * This class is intended to act as a buffer between the code-genned profile and the
  * Created by Ryan Miles
  */
-public final class ProfileWrapper
+public final class TemplateWrapper
 {
-	private final Profile _profile;
+	private final Template _template;
 
-	public ProfileWrapper(Profile profile)
+	public TemplateWrapper(Template profile)
 	{
-		_profile = profile;
+		_template = profile;
 	}
 
 	public Integer getDprId()
 	{
-		return _profile.getDprID();
+		return _template.getDprID();
 	}
 
 	public String getName()
 	{
-		return _profile.getDprName();
+		return _template.getDprName();
 	}
 
 	@Override
@@ -46,19 +46,19 @@ public final class ProfileWrapper
 		{
 			return false;
 		}
-		ProfileWrapper that = (ProfileWrapper) o;
-		return _profile.equals(that._profile);
+		TemplateWrapper that = (TemplateWrapper) o;
+		return _template.equals(that._template);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(_profile);
+		return Objects.hash(_template);
 	}
 
 	@Override
 	public String toString()
 	{
-		return _profile.toString();
+		return _template.toString();
 	}
 }

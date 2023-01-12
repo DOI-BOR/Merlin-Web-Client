@@ -14,9 +14,11 @@ import java.time.Instant;
 
 public interface Access
 {
-	String getJsonMeasurementsByProfileId(TokenContainer container, Integer profileId) throws HttpAccessException;
+	String getJsonMeasurementsByTemplateId(TokenContainer container, Integer profileId) throws HttpAccessException;
 
-	String getJsonProfiles(TokenContainer container) throws HttpAccessException;
+	String getJsonTemplates(TokenContainer container) throws HttpAccessException;
 
-	String getJsonEventsBySeries(TokenContainer container, String seriesString, Instant start, Instant end) throws HttpAccessException;
+	String getJsonEventsBySeries(TokenContainer container, String seriesString, Integer qualityVersionID, Instant start, Instant end) throws HttpAccessException;
+
+	String getJsonQualityVersions(TokenContainer container) throws HttpAccessException;
 }
