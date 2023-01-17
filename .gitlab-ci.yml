@@ -32,10 +32,6 @@ deploy-to-nexus:
     - build-java-code
   tags:
     - docker
-  when: manual
-  only:
-    refs:
-      - tags
   cache:
     key:
       files:
