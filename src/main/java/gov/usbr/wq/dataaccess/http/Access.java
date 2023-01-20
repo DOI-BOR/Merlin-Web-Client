@@ -14,7 +14,7 @@ import java.time.Instant;
 
 public interface Access
 {
-	String getJsonMeasurementsByTemplateId(TokenContainer container, Integer profileId) throws HttpAccessException;
+	String getJsonMeasurementsByTemplateId(TokenContainer container, Integer templateId) throws HttpAccessException;
 
 	String getJsonTemplates(TokenContainer container) throws HttpAccessException;
 
