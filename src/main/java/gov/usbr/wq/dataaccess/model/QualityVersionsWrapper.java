@@ -2,6 +2,8 @@ package gov.usbr.wq.dataaccess.model;
 
 import gov.usbr.wq.dataaccess.json.QualityVersions;
 
+import java.util.Objects;
+
 /**
  * Created by Bryson Spilman
  */
@@ -43,4 +45,30 @@ public final class QualityVersionsWrapper
         return _qualityVersions.getQvUI();
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+        QualityVersionsWrapper that = (QualityVersionsWrapper) o;
+        return Objects.equals(_qualityVersions, that._qualityVersions);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(_qualityVersions);
+    }
+
+    @Override
+    public String toString()
+    {
+        return _qualityVersions.toString();
+    }
 }
