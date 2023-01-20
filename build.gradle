@@ -1,25 +1,26 @@
-
 plugins {
     id 'java'
+    id "com.palantir.git-version" version "0.13.0"
     id 'org.hidetake.swagger.generator' version '2.18.2'
-    id 'maven-publish'
     id 'project-report'
+    id 'maven-publish'
 }
 
-apply plugin: 'java'
+def versionLabel(gitInfo) {
+    def branch = gitInfo.branchName // all branches are snapshots, only tags get released
+    if (branch == null && !"$System.env.CI_COMMIT_BRANCH".isEmpty()) {
+        branch = "$System.env.CI_COMMIT_BRANCH" // Gitlab CI checks out a commit, not a branch. Grab the branch name from the env vars it sets
+    }
+    def tag = gitInfo.lastTag
+    // tag is returned as is. Branch may need cleanup
+    return (branch == null || branch == "null" || branch.isEmpty()) ? tag : branch.replace("/","-") + "-SNAPSHOT"
+}
 
 group 'gov.usbr.wq'
-version '2.0-SNAPSHOT'
+version versionLabel(versionDetails())
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2')
-    }
 }
 
 compileJava {
@@ -36,6 +37,19 @@ publishing {
         maven(MavenPublication) {
             artifactId = 'merlin-web-client'
             from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = project.hasProperty('rmaNexusUser') ? "$rmaNexusUser" : "defaultUser"
+                password = project.hasProperty('rmaNexusPassword') ? "$rmaNexusPassword" : "defaultPassword"
+            }
+            afterEvaluate {
+                url = version.toString().endsWith("SNAPSHOT") ?
+                        "https://artifact.rmanet.app/repository/usbr-component-snapshots/" :
+                        "https://artifact.rmanet.app/repository/usbr-component-releases/"
+            }
         }
     }
 }
@@ -90,3 +104,24 @@ build.dependsOn generateSwaggerCode
 //        }
 //    }
 //}
+
+/**
+ * To help people understand how the versioning
+ * interacts with the git repo
+ */
+task showGit () {
+    doFirst {
+        def gitInfo = versionDetails()
+        println( "Used:    " + getVersion() ) // The select version (the project.version field)
+        println( "Tag:     " + gitInfo.lastTag) // actual tag or commit hash(short) if no tag
+        println( "Hash:    " + gitInfo.gitHash) // short commit hash
+        println( "Branch:  " + gitInfo.branchName) // branch name (null if tag checkout)
+        println( "TagBuild:" + gitInfo.isCleanTag) // true if repoi is in dettached head mode(e.g. git checkout <tag>)
+        println( "CI_COMMIT_BRANCH: $System.env.CI_COMMIT_BRANCH") // Used by the Gitlab CI runner, since it checks out a commit, not a branch
+    }
+}
+
+configure(showGit) {
+    group = 'help'
+    description = 'Shows Git Tag Versioning information'
+}
