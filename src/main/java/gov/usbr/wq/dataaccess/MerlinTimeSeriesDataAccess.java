@@ -66,7 +66,7 @@ public final class MerlinTimeSeriesDataAccess
 	{
 		Access httpAccess = _accessBuilder.get();
 		String json = httpAccess.getJsonEventsBySeries(token, measure.getSeriesString(), qualityVersionID, start, end);
-		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class), start, end);
+		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class));
 	}
 
 	public List<QualityVersionsWrapper> getQualityVersions(TokenContainer token) throws HttpAccessException, IOException

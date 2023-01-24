@@ -33,15 +33,10 @@ public final class DataWrapper
 	private static final Logger LOGGER = Logger.getLogger(DataWrapper.class.getName());
 	private final Data _data;
 	private final NavigableSet<EventWrapper> _events = new TreeSet<>();
-	private final Instant _startRetrievalTime;
-	private final Instant _endRetrievalTime;
 
-
-	public DataWrapper(Data data, Instant startRetrievalTime, Instant endRetrievalTime)
+	public DataWrapper(Data data)
 	{
 		_data = data;
-		_startRetrievalTime = startRetrievalTime;
-		_endRetrievalTime = endRetrievalTime;
 
 		List<EventWrapper> events = new ArrayList<>();
 		if (data.getEvents() != null)
@@ -61,7 +56,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getStartTime()
 	{
-		ZonedDateTime output = _startRetrievalTime.atZone(getTimeZone());
+		ZonedDateTime output = Instant.ofEpochMilli(Long.MIN_VALUE).atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{
@@ -73,7 +68,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getEndTime()
 	{
-		ZonedDateTime output = _endRetrievalTime.atZone(getTimeZone());
+		ZonedDateTime output = Instant.ofEpochMilli(Long.MAX_VALUE).atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{

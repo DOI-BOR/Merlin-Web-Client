@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -59,13 +60,15 @@ public class HttpAccessUtils
 			.readTimeout(getReadTimeout())
 			.build();
 
-	public static TokenContainer authenticate(String user, String pass) throws HttpAccessException
+	public static TokenContainer authenticate(String user, char[] pass) throws HttpAccessException
 	{
 		String apiUrl = WEB_SERVICE_ROOT + MERLIN_WEB_SERVICE_API_ACCOUNT_GENERATE_TOKEN;
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(apiUrl).newBuilder();
 		//params in url
+		//hopefully this can be updated in future to not have password as a parameter
 		urlBuilder.addQueryParameter(USERNAME_QUERY_PARAM, user)
-				  .addQueryParameter(PASSWORD_QUERY_PARAM, pass);
+				  .addQueryParameter(PASSWORD_QUERY_PARAM, String.valueOf(pass));
+		Arrays.fill(pass, '\0');
 		String fullUrl = urlBuilder.build().toString();
 		//empty post body
 		FormBody body = new FormBody.Builder().build();

@@ -70,9 +70,9 @@ public final class ResourceAccess
 		}
 	}
 
-	public static String getPassword()
+	public static char[] getPassword()
 	{
 		validateSetup();
-		return System.getProperty(PASSWORD_PROPERTY);
+		return System.getProperty(PASSWORD_PROPERTY).toCharArray();
 	}
 }

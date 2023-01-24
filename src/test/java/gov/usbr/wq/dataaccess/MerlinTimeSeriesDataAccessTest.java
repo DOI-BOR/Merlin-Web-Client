@@ -39,7 +39,7 @@ class MerlinTimeSeriesDataAccessTest
 	void getTemplates() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
@@ -51,7 +51,7 @@ class MerlinTimeSeriesDataAccessTest
 	void getMeasurementsByTemplate() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
@@ -77,13 +77,13 @@ class MerlinTimeSeriesDataAccessTest
 	void getEventsBySeries() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
 		List<MeasureWrapper> measurementsByTemplate = dataAccess.getMeasurementsByTemplate(token, templates.get(2));
 		MeasureWrapper measure = measurementsByTemplate.get(0);
-		Instant start = Instant.parse("2019-01-01T08:00:00.00Z");
+		Instant start = Instant.parse("2016-01-01T08:00:00.00Z");
 		Instant end = Instant.parse("2020-01-01T08:00:00.00Z");
 		DataWrapper eventsBySeries = dataAccess.getEventsBySeries(token, measure, null, start, end);
 		assertNotNull(eventsBySeries, "Failed to retrieve events by series");
@@ -94,13 +94,13 @@ class MerlinTimeSeriesDataAccessTest
 	void getEventsBySeriesWithQualityVersion() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
 		List<MeasureWrapper> measurementsByTemplate = dataAccess.getMeasurementsByTemplate(token, templates.get(2));
 		MeasureWrapper measure = measurementsByTemplate.get(0);
-		Instant start = Instant.parse("2019-01-01T08:00:00.00Z");
+		Instant start = Instant.parse("2016-01-01T08:00:00.00Z");
 		Instant end = Instant.parse("2020-01-01T08:00:00.00Z");
 		List<QualityVersionsWrapper> qvs = dataAccess.getQualityVersions(token);
 		for(QualityVersionsWrapper qv : qvs)
@@ -115,7 +115,7 @@ class MerlinTimeSeriesDataAccessTest
 	void getQualityVersions() throws HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<QualityVersionsWrapper> qualityVersions = assertDoesNotThrow(() -> dataAccess.getQualityVersions(token), "Failed to retrieve quality versions");
@@ -127,13 +127,13 @@ class MerlinTimeSeriesDataAccessTest
 	void getEventsBySeriesMultiThread() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
 
-		Instant start = ZonedDateTime.now().withYear(2019).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
-		Instant end = ZonedDateTime.now().withYear(2019).withDayOfYear(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant start = ZonedDateTime.now().withYear(2016).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant end = ZonedDateTime.now().withYear(2017).withMonth(12).withDayOfMonth(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
 		List<Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>>> collect = templates.stream()
 			.map((p) -> CompletableFuture.supplyAsync(() -> asyncMeasuresByTemplate(dataAccess, token, p)))
 			.map((f) -> f.thenApplyAsync((p) -> asyncMeasureListToData(dataAccess, token, p, start, end)))
@@ -172,13 +172,13 @@ class MerlinTimeSeriesDataAccessTest
 	void getEventsBySeriesWithQualityVersionMultiThread() throws IOException, HttpAccessException
 	{
 		String username = ResourceAccess.getUsername();
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
 		List<TemplateWrapper> templates = dataAccess.getTemplates(token);
 		int qvID = 0;
-		Instant start = ZonedDateTime.now().withYear(2019).withDayOfYear(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
-		Instant end = ZonedDateTime.now().withYear(2019).withDayOfYear(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant start = ZonedDateTime.now().withYear(2016).withMonth(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
+		Instant end = ZonedDateTime.now().withYear(2017).withMonth(12).withDayOfMonth(30).withHour(0).withMinute(0).withSecond(0).withNano(0).toInstant();
 		List<Pair<TemplateWrapper, Map<MeasureWrapper, DataWrapper>>> collect = templates.stream()
 				.map((p) -> CompletableFuture.supplyAsync(() -> asyncMeasuresByTemplate(dataAccess, token, p)))
 				.map((f) -> f.thenApplyAsync((p) -> asyncMeasureListToDataWithQualityVersion(dataAccess, token, p, qvID, start, end)))
@@ -259,7 +259,7 @@ class MerlinTimeSeriesDataAccessTest
 		}
 		catch (IOException | HttpAccessException e)
 		{
-			eventsBySeries =  new DataWrapper(new Data(), null, null);
+			eventsBySeries =  new DataWrapper(new Data());
 			//ignore internal server error 500 for now in case server is failing
 			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getCode() != 403 && ((HttpAccessException)e).getCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions, as that is out of scope of this unit test
 			{
@@ -279,7 +279,7 @@ class MerlinTimeSeriesDataAccessTest
 		}
 		catch (IOException | HttpAccessException e)
 		{
-			eventsBySeries =  new DataWrapper(new Data(), null, null);
+			eventsBySeries =  new DataWrapper(new Data());
 			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getCode() != 403 && ((HttpAccessException)e).getCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions in some case
 			{
 				eventsBySeries = null;
