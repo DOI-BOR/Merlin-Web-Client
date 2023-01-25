@@ -12,15 +12,15 @@ import gov.usbr.wq.dataaccess.json.Data;
 
 import java.time.DateTimeException;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
@@ -31,35 +31,12 @@ import static java.util.stream.Collectors.toList;
 public final class DataWrapper
 {
 	private static final Logger LOGGER = Logger.getLogger(DataWrapper.class.getName());
-
 	private final Data _data;
 	private final NavigableSet<EventWrapper> _events = new TreeSet<>();
-	private final ZoneId _zoneId;
-	private final Instant _startRetrievalTime;
-	private final Instant _endRetrievalTime;
 
-
-	public DataWrapper(Data data, Instant startRetrievalTime, Instant endRetrievalTime)
+	public DataWrapper(Data data)
 	{
 		_data = data;
-		_startRetrievalTime = startRetrievalTime;
-		_endRetrievalTime = endRetrievalTime;
-		ZoneId zoneId = ZoneId.of("UTC");
-		if (data.getTimeZone() != null)
-		{
-			try
-			{
-				zoneId = ZoneId.of(data.getTimeZone());
-			}
-			catch (DateTimeException ex)
-			{
-				//Not sure what to do, for now stick with UTC
-				TimeZone tz = TimeZone.getTimeZone(data.getTimeZone());
-				LOGGER.fine(() -> "Converting " + data.getTimeZone() + " to " + tz);
-				zoneId = tz.toZoneId();
-			}
-		}
-		_zoneId = zoneId;
 
 		List<EventWrapper> events = new ArrayList<>();
 		if (data.getEvents() != null)
@@ -79,7 +56,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getStartTime()
 	{
-		ZonedDateTime output = _startRetrievalTime.atZone(getTimeZone());
+		ZonedDateTime output = Instant.ofEpochMilli(Long.MIN_VALUE).atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{
@@ -91,7 +68,7 @@ public final class DataWrapper
 
 	public ZonedDateTime getEndTime()
 	{
-		ZonedDateTime output = _endRetrievalTime.atZone(getTimeZone());
+		ZonedDateTime output = Instant.ofEpochMilli(Long.MAX_VALUE).atZone(getTimeZone());
 
 		if (!_events.isEmpty())
 		{
@@ -113,7 +90,22 @@ public final class DataWrapper
 
 	public ZoneId getTimeZone()
 	{
-		return _zoneId;
+		ZoneId zoneId = ZoneId.of("UTC");
+		if (_data.getTimeZone() != null)
+		{
+			try
+			{
+				zoneId = ZoneId.of(_data.getTimeZone());
+			}
+			catch (DateTimeException ex)
+			{
+				TimeZone tz = TimeZone.getTimeZone(_data.getTimeZone());
+				String msg = "Converting " + _data.getTimeZone() + " to " + tz;
+				LOGGER.log(Level.FINE, msg, ex);
+				zoneId = tz.toZoneId();
+			}
+		}
+		return zoneId;
 	}
 
 	public String getDuration()
@@ -165,6 +157,27 @@ public final class DataWrapper
 	public String toString()
 	{
 		return _data.toString();
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+		DataWrapper that = (DataWrapper) o;
+		return Objects.equals(_data, that._data);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(_data);
 	}
 
 	public String getDataType()

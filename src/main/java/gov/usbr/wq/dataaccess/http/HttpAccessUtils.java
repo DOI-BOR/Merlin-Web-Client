@@ -8,6 +8,8 @@
 
 package gov.usbr.wq.dataaccess.http;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
@@ -16,9 +18,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -53,18 +60,19 @@ public class HttpAccessUtils
 			.readTimeout(getReadTimeout())
 			.build();
 
-	public static TokenContainer authenticate(String user, String pass) throws HttpAccessException
+	public static TokenContainer authenticate(String user, char[] pass) throws HttpAccessException
 	{
 		String apiUrl = WEB_SERVICE_ROOT + MERLIN_WEB_SERVICE_API_ACCOUNT_GENERATE_TOKEN;
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(apiUrl).newBuilder();
 		//params in url
+		//hopefully this can be updated in future to not have password as a parameter
 		urlBuilder.addQueryParameter(USERNAME_QUERY_PARAM, user)
-				  .addQueryParameter(PASSWORD_QUERY_PARAM, pass);
+				  .addQueryParameter(PASSWORD_QUERY_PARAM, String.valueOf(pass));
 		String fullUrl = urlBuilder.build().toString();
 		//empty post body
 		FormBody body = new FormBody.Builder().build();
 		Request request = new Request.Builder().url(fullUrl).post(body).build();
-
+		LOGGER.finer(() -> request.method() + " Request to " + getRedactedSecurityInfoUrl(fullUrl));
 		String tokenString = getRequestBodyString(request);
 
 		//response token comes back quoted, strip quotes
@@ -99,8 +107,30 @@ public class HttpAccessUtils
 	private static String getJsonWithUrlBuilder(HttpUrl.Builder urlBuilder) throws HttpAccessException
 	{
 		String url = urlBuilder.build().toString();
+		String redactedTokenUrl = getRedactedSecurityInfoUrl(url);
 		Request request = new Request.Builder().url(url).build();
+		LOGGER.finer(() -> request.method() + " Request to " + redactedTokenUrl);
 		return getRequestBodyString(request);
+	}
+
+	//method used for redacting token/password for use in logging
+	private static String getRedactedSecurityInfoUrl(String url)
+	{
+		URI uri = UriComponentsBuilder.fromHttpUrl(url).build().toUri();
+		String query = uri.getQuery();
+		if(query.contains("token="))
+		{
+			uri = UriComponentsBuilder.fromHttpUrl(url)
+					.replaceQueryParam("token", "<REDACTED>")
+					.build().toUri();
+		}
+		if(query.contains("password="))
+		{
+			uri = UriComponentsBuilder.fromHttpUrl(url)
+					.replaceQueryParam("password", "<REDACTED>")
+					.build().toUri();
+		}
+		return UriUtils.decode(uri.toString(), StandardCharsets.UTF_8);
 	}
 
 	private static String getRequestBodyString(Request request) throws HttpAccessException
@@ -115,7 +145,16 @@ public class HttpAccessUtils
 			if (response.code() == 200)
 			{
 				//success
-				return response.body().string();
+				String bodyString = response.body().string();
+				String secureBodyString = bodyString;
+				if(isResponseAToken(bodyString))
+				{
+					secureBodyString = "<TOKEN REDACTED>";
+				}
+				String logBodyString = secureBodyString;
+				LOGGER.finest(() -> request.method() + " Request to " + getRedactedSecurityInfoUrl(url.toString()) + " RESPONSE: " + System.lineSeparator()
+						+ logBodyString);
+				return bodyString;
 			}
 			else
 			{
@@ -131,6 +170,21 @@ public class HttpAccessUtils
 		{
 			throw new HttpAccessException(ex);
 		}
+	}
+
+	private static boolean isResponseAToken(String responseBody)
+	{
+		responseBody = responseBody.replace("\"", "");
+		boolean retval = true;
+		try
+		{
+			JWT.decode(responseBody);
+		}
+		catch(JWTDecodeException e)
+		{
+			retval = false;
+		}
+		return retval;
 	}
 
 	static String getJsonWithToken(TokenContainer token, String api, Map<String, String> queryParams) throws HttpAccessException

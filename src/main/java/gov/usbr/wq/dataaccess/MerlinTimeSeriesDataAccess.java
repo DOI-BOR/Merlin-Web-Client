@@ -11,28 +11,27 @@ package gov.usbr.wq.dataaccess;
 import gov.usbr.wq.dataaccess.http.Access;
 import gov.usbr.wq.dataaccess.http.HttpAccessException;
 import gov.usbr.wq.dataaccess.http.HttpAccessUtils;
+import gov.usbr.wq.dataaccess.json.QualityVersions;
+import gov.usbr.wq.dataaccess.json.Template;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
 import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.json.Measure;
-import gov.usbr.wq.dataaccess.json.Profile;
 import gov.usbr.wq.dataaccess.model.DataWrapper;
 import gov.usbr.wq.dataaccess.model.MeasureWrapper;
-import gov.usbr.wq.dataaccess.model.ProfileWrapper;
+import gov.usbr.wq.dataaccess.model.QualityVersionsWrapper;
+import gov.usbr.wq.dataaccess.model.TemplateWrapper;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
 public final class MerlinTimeSeriesDataAccess
 {
-	private static final Logger LOGGER = Logger.getLogger(MerlinTimeSeriesDataAccess.class.getName());
-
 	private final Supplier<Access> _accessBuilder;
 
 	public MerlinTimeSeriesDataAccess()
@@ -45,34 +44,37 @@ public final class MerlinTimeSeriesDataAccess
 		_accessBuilder = accessBuilder;
 	}
 
-	public List<ProfileWrapper> getProfiles(TokenContainer token) throws IOException, HttpAccessException
+	public List<TemplateWrapper> getTemplates(TokenContainer token) throws IOException, HttpAccessException
 	{
 		Access httpAccess = _accessBuilder.get();
-
-		String json = httpAccess.getJsonProfiles(token);
-		LOGGER.log(Level.FINEST, () -> "getProfiles() JSON:" + System.lineSeparator() + json);
-		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Profile.class).stream()
-								 .map(ProfileWrapper::new)
+		String json = httpAccess.getJsonTemplates(token);
+		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Template.class).stream()
+								 .map(TemplateWrapper::new)
 								 .collect(toList());
 	}
 
-	public List<MeasureWrapper> getMeasurementsByProfile(TokenContainer token, ProfileWrapper profile) throws IOException, HttpAccessException
+	public List<MeasureWrapper> getMeasurementsByTemplate(TokenContainer token, TemplateWrapper template) throws IOException, HttpAccessException
 	{
 		Access httpAccess = _accessBuilder.get();
-		String json = httpAccess.getJsonMeasurementsByProfileId(token, profile.getDprId());
-		LOGGER.log(Level.FINEST, () -> "getMeasurementsByProfile(" + profile + ") JSON:" + System.lineSeparator() + json);
+		String json = httpAccess.getJsonMeasurementsByTemplateId(token, template.getDprId());
 		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Measure.class).stream()
 								 .map(MeasureWrapper::new)
 								 .collect(toList());
 	}
 
-	public DataWrapper getEventsBySeries(TokenContainer token, MeasureWrapper measure, Instant start, Instant end) throws IOException, HttpAccessException
+	public DataWrapper getEventsBySeries(TokenContainer token, MeasureWrapper measure, Integer qualityVersionID, Instant start, Instant end) throws IOException, HttpAccessException
 	{
 		Access httpAccess = _accessBuilder.get();
-		String json = httpAccess.getJsonEventsBySeries(token, measure.getSeriesString(), start, end);
+		String json = httpAccess.getJsonEventsBySeries(token, measure.getSeriesString(), qualityVersionID, start, end);
+		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class));
+	}
 
-		LOGGER.log(Level.FINEST, () -> "getEventsBySeries(" + measure + ", " + "[" + start + ", " + end + "]) JSON:" + System.lineSeparator() + json);
-
-		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class), start, end);
+	public List<QualityVersionsWrapper> getQualityVersions(TokenContainer token) throws HttpAccessException, IOException
+	{
+		Access httpAccess = _accessBuilder.get();
+		String json = httpAccess.getJsonQualityVersions(token);
+		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, QualityVersions.class).stream()
+				.map(QualityVersionsWrapper::new)
+				.collect(toList());
 	}
 }

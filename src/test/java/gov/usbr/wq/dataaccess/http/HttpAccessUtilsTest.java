@@ -21,7 +21,7 @@ class HttpAccessUtilsTest
 	@Test
 	void testAuthenticate() throws HttpAccessException
 	{
-		String password = ResourceAccess.getPassword();
+		char[] password = ResourceAccess.getPassword();
 		String username = ResourceAccess.getUsername();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		assertTrue(token instanceof JwtContainer);
