@@ -14,7 +14,7 @@ import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 import gov.usbr.wq.dataaccess.model.DataWrapper;
 import gov.usbr.wq.dataaccess.model.MeasureWrapper;
-import gov.usbr.wq.dataaccess.model.QualityVersionsWrapper;
+import gov.usbr.wq.dataaccess.model.QualityVersionWrapper;
 import gov.usbr.wq.dataaccess.model.TemplateWrapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -102,11 +102,11 @@ class MerlinTimeSeriesDataAccessTest
 		MeasureWrapper measure = measurementsByTemplate.get(0);
 		Instant start = Instant.parse("2016-01-01T08:00:00.00Z");
 		Instant end = Instant.parse("2020-01-01T08:00:00.00Z");
-		List<QualityVersionsWrapper> qvs = dataAccess.getQualityVersions(token);
-		for(QualityVersionsWrapper qv : qvs)
+		List<QualityVersionWrapper> qvs = dataAccess.getQualityVersions(token);
+		for(QualityVersionWrapper qv : qvs)
 		{
-			DataWrapper eventsBySeries = dataAccess.getEventsBySeries(token, measure, qv.getQvID(), start, end);
-			assertNotNull(eventsBySeries, "Failed to retrieve events by series with QualityVersion: " + qv.getQvID());
+			DataWrapper eventsBySeries = dataAccess.getEventsBySeries(token, measure, qv.getQualityVersionID(), start, end);
+			assertNotNull(eventsBySeries, "Failed to retrieve events by series with QualityVersion: " + qv.getQualityVersionID());
 			LOGGER.info(eventsBySeries.toString());
 		}
 	}
@@ -118,7 +118,7 @@ class MerlinTimeSeriesDataAccessTest
 		char[] password = ResourceAccess.getPassword();
 		TokenContainer token = HttpAccessUtils.authenticate(username, password);
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
-		List<QualityVersionsWrapper> qualityVersions = assertDoesNotThrow(() -> dataAccess.getQualityVersions(token), "Failed to retrieve quality versions");
+		List<QualityVersionWrapper> qualityVersions = assertDoesNotThrow(() -> dataAccess.getQualityVersions(token), "Failed to retrieve quality versions");
 		assertNotNull(qualityVersions, "Failed to retrieve Quality Versions");
 		LOGGER.info(qualityVersions.toString());
 	}

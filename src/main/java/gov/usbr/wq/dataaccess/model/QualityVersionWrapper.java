@@ -7,40 +7,40 @@ import java.util.Objects;
 /**
  * Created by Bryson Spilman
  */
-public final class QualityVersionsWrapper
+public final class QualityVersionWrapper
 {
     private final QualityVersions _qualityVersions;
-    public QualityVersionsWrapper(QualityVersions qualityVersions)
+    public QualityVersionWrapper(QualityVersions qualityVersions)
     {
         _qualityVersions = qualityVersions;
     }
 
-    public Integer getQvID()
+    public Integer getQualityVersionID()
     {
         return _qualityVersions.getQvID();
     }
 
-    public String getQvName()
+    public String getQualityVersionName()
     {
         return _qualityVersions.getQvName();
     }
 
-    public String getQvDescription()
+    public String getQualityVersionDescription()
     {
         return _qualityVersions.getQvDescription();
     }
 
-    public Boolean isQvActive()
+    public Boolean isQualityVersionActive()
     {
         return _qualityVersions.isQvActive();
     }
 
-    public Boolean isQvQueryHistory()
+    public Boolean isQualityVersionQueryHistory()
     {
         return _qualityVersions.isQvQueryHistory();
     }
 
-    public Integer getQvUI()
+    public Integer getQualityVersionUI()
     {
         return _qualityVersions.getQvUI();
     }
@@ -56,7 +56,7 @@ public final class QualityVersionsWrapper
         {
             return false;
         }
-        QualityVersionsWrapper that = (QualityVersionsWrapper) o;
+        QualityVersionWrapper that = (QualityVersionWrapper) o;
         return Objects.equals(_qualityVersions, that._qualityVersions);
     }
 
