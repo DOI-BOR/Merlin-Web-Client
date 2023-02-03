@@ -19,34 +19,20 @@ import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.json.Measure;
 import gov.usbr.wq.dataaccess.model.DataWrapper;
 import gov.usbr.wq.dataaccess.model.MeasureWrapper;
-import gov.usbr.wq.dataaccess.model.QualityVersionsWrapper;
+import gov.usbr.wq.dataaccess.model.QualityVersionWrapper;
 import gov.usbr.wq.dataaccess.model.TemplateWrapper;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
 public final class MerlinTimeSeriesDataAccess
 {
-	private final Supplier<Access> _accessBuilder;
-
-	public MerlinTimeSeriesDataAccess()
-	{
-		this(HttpAccessUtils::buildHttpAccess);
-	}
-
-	public MerlinTimeSeriesDataAccess(Supplier<Access> accessBuilder)
-	{
-		_accessBuilder = accessBuilder;
-	}
-
 	public List<TemplateWrapper> getTemplates(TokenContainer token) throws IOException, HttpAccessException
 	{
-		Access httpAccess = _accessBuilder.get();
+		Access httpAccess = HttpAccessUtils.buildHttpAccess();
 		String json = httpAccess.getJsonTemplates(token);
 		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Template.class).stream()
 								 .map(TemplateWrapper::new)
@@ -55,7 +41,7 @@ public final class MerlinTimeSeriesDataAccess
 
 	public List<MeasureWrapper> getMeasurementsByTemplate(TokenContainer token, TemplateWrapper template) throws IOException, HttpAccessException
 	{
-		Access httpAccess = _accessBuilder.get();
+		Access httpAccess = HttpAccessUtils.buildHttpAccess();
 		String json = httpAccess.getJsonMeasurementsByTemplateId(token, template.getDprId());
 		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, Measure.class).stream()
 								 .map(MeasureWrapper::new)
@@ -64,17 +50,17 @@ public final class MerlinTimeSeriesDataAccess
 
 	public DataWrapper getEventsBySeries(TokenContainer token, MeasureWrapper measure, Integer qualityVersionID, Instant start, Instant end) throws IOException, HttpAccessException
 	{
-		Access httpAccess = _accessBuilder.get();
+		Access httpAccess = HttpAccessUtils.buildHttpAccess();
 		String json = httpAccess.getJsonEventsBySeries(token, measure.getSeriesString(), qualityVersionID, start, end);
 		return new DataWrapper(MerlinObjectMapper.mapJsonToObjectUsingClass(json,Data.class));
 	}
 
-	public List<QualityVersionsWrapper> getQualityVersions(TokenContainer token) throws HttpAccessException, IOException
+	public List<QualityVersionWrapper> getQualityVersions(TokenContainer token) throws HttpAccessException, IOException
 	{
-		Access httpAccess = _accessBuilder.get();
+		Access httpAccess = HttpAccessUtils.buildHttpAccess();
 		String json = httpAccess.getJsonQualityVersions(token);
 		return MerlinObjectMapper.mapJsonToListOfObjectsUsingClass(json, QualityVersions.class).stream()
-				.map(QualityVersionsWrapper::new)
+				.map(QualityVersionWrapper::new)
 				.collect(toList());
 	}
 }
