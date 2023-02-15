@@ -12,4 +12,6 @@ public interface TokenContainer
 {
 	boolean isValid();
 	String getToken();
+
+	boolean isExpired();
 }

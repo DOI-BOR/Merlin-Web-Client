@@ -1,0 +1,38 @@
+package gov.usbr.wq.dataaccess.jwt;
+
+import com.auth0.jwt.interfaces.DecodedJWT;
+
+import java.time.Instant;
+import java.util.Date;
+
+public final class TokenValidator
+{
+    private static final String REFRESH_EXPIRED_BUFFER_PROPERTY_KEY = "merlin.token.refresh.buffer.millis";
+    private static final long DEFAULT_REFRESH_EXPIRED_BUFFER_SECONDS = 1;
+
+    private TokenValidator()
+    {
+        throw new AssertionError("Utility class");
+    }
+
+    /**
+     * Checks if token's access token is expired.
+     *
+     * @param jwt - JWT to check.
+     * @return boolean TRUE if expired, else FALSE
+     */
+    public static boolean isTokenExpired(DecodedJWT jwt)
+    {
+        long bufferMillis = Instant.ofEpochSecond(DEFAULT_REFRESH_EXPIRED_BUFFER_SECONDS)
+                .toEpochMilli(); //default 1 second buffer
+        String bufferStr = System.getProperty(REFRESH_EXPIRED_BUFFER_PROPERTY_KEY);
+        if (bufferStr != null)
+        {
+            bufferMillis = Long.parseLong(bufferStr);
+        }
+        //take current time and subtract buffer. If token is expired at that time, then its no longer valid
+        Instant noLongerValid = Instant.now().minusMillis(bufferMillis);
+        return jwt.getExpiresAt().before(Date.from(noLongerValid));
+
+    }
+}
