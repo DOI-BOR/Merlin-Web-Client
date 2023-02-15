@@ -38,4 +38,10 @@ public final class NoOpTokenContainer implements TokenContainer
 	{
 		return _token;
 	}
+
+	@Override
+	public boolean isExpired()
+	{
+		return false;
+	}
 }

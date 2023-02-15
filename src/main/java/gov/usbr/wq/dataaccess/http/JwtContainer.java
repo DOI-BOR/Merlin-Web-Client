@@ -35,8 +35,8 @@ final class JwtContainer implements TokenContainer
 	@Override
 	public boolean isExpired()
 	{
-		boolean retVal = isValid();
-		if(retVal)
+		boolean retVal = true;
+		if(isValid())
 		{
 			retVal = TokenValidator.isTokenExpired(JWT.decode(_token));
 		}
