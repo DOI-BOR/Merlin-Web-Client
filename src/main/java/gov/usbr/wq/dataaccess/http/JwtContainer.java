@@ -10,7 +10,6 @@ package gov.usbr.wq.dataaccess.http;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import gov.usbr.wq.dataaccess.jwt.TokenContainer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +31,17 @@ final class JwtContainer implements TokenContainer
 	}
 
 	@Override
+	public boolean isExpired()
+	{
+		boolean retVal = true;
+		if(isValid())
+		{
+			retVal = TokenValidator.isTokenExpired(JWT.decode(_token));
+		}
+		return retVal;
+	}
+
+	@Override
 	public boolean isValid()
 	{
 		boolean retval = false;
@@ -45,4 +55,6 @@ final class JwtContainer implements TokenContainer
 		}
 		return retval;
 	}
+
+
 }

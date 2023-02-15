@@ -6,7 +6,9 @@
  * from USBR.
  */
 
-package gov.usbr.wq.dataaccess.jwt;
+package gov.usbr.wq.dataaccess.http;
+
+import gov.usbr.wq.dataaccess.http.TokenContainer;
 
 /**
  * Created by Ryan Miles
@@ -37,5 +39,11 @@ public final class NoOpTokenContainer implements TokenContainer
 	public String getToken()
 	{
 		return _token;
+	}
+
+	@Override
+	public boolean isExpired()
+	{
+		return false;
 	}
 }
