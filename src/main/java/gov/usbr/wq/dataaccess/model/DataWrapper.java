@@ -93,13 +93,19 @@ public final class DataWrapper
 		ZoneId zoneId = ZoneId.of("UTC");
 		if (_data.getTimeZone() != null)
 		{
+			String timeZoneStr = _data.getTimeZone();
+			if (timeZoneStr.contains(" "))
+			{
+				timeZoneStr = timeZoneStr.replace(" ","");
+			}
 			try
 			{
-				zoneId = ZoneId.of(_data.getTimeZone());
+				zoneId = ZoneId.of(timeZoneStr);
 			}
 			catch (DateTimeException ex)
 			{
-				TimeZone tz = TimeZone.getTimeZone(_data.getTimeZone());
+
+				TimeZone tz = TimeZone.getTimeZone(timeZoneStr);
 				String msg = "Converting " + _data.getTimeZone() + " to " + tz;
 				LOGGER.log(Level.FINE, msg, ex);
 				zoneId = tz.toZoneId();
