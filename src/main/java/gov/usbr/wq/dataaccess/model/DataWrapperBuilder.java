@@ -1,6 +1,7 @@
 package gov.usbr.wq.dataaccess.model;
 
 import java.util.NavigableSet;
+import java.util.TreeSet;
 
 import gov.usbr.wq.dataaccess.json.Data;
 import gov.usbr.wq.dataaccess.json.Event;
@@ -22,7 +23,7 @@ public final class DataWrapperBuilder
     private String _units;
     private String _timeZone;
     private String _seriesString;
-    private NavigableSet<EventWrapper> _events;
+    private NavigableSet<EventWrapper> _events = new TreeSet<>();
 
     public DataWrapperBuilder withDataWrapper(DataWrapper dataWrapper)
     {
