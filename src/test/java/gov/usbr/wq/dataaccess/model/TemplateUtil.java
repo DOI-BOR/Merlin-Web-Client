@@ -111,7 +111,7 @@ public class TemplateUtil
 		catch(HttpAccessException e)
 		{
 			//ignore bad 500 error code on server end until they fix it
-			if(!(e instanceof HttpAccessException) && ((HttpAccessException) e).getCode() != 500)
+			if(!(e instanceof HttpAccessException) && ((HttpAccessException) e).getResponseCode() != 500)
 			{
 				throw new RuntimeException(e);
 			}

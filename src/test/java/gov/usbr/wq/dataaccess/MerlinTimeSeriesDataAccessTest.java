@@ -263,7 +263,7 @@ class MerlinTimeSeriesDataAccessTest
 		{
 			eventsBySeries =  new DataWrapper(new Data());
 			//ignore internal server error 500 for now in case server is failing
-			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getCode() != 403 && ((HttpAccessException)e).getCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions, as that is out of scope of this unit test
+			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getResponseCode() != 403 && ((HttpAccessException)e).getResponseCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions, as that is out of scope of this unit test
 			{
 				eventsBySeries = null;
 				LOGGER.log(Level.WARNING, e, () -> "Error retrieving data for measure: " + measure);
@@ -282,7 +282,7 @@ class MerlinTimeSeriesDataAccessTest
 		catch (IOException | HttpAccessException e)
 		{
 			eventsBySeries =  new DataWrapper(new Data());
-			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getCode() != 403 && ((HttpAccessException)e).getCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions in some case
+			if(!(e instanceof HttpAccessException) || (((HttpAccessException)e).getResponseCode() != 403 && ((HttpAccessException)e).getResponseCode() != 500)) //ignore 403 error which seems to be a special case where test user doesn't have permissions in some case
 			{
 				eventsBySeries = null;
 				LOGGER.log(Level.WARNING, e, () -> "Error retrieving data for measure: " + measure);
