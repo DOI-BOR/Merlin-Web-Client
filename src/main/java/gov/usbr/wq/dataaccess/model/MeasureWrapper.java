@@ -65,4 +65,30 @@ public final class MeasureWrapper
 	{
 		return _measure.toString();
 	}
+
+	public String getProjectAndSiteAndSensor()
+	{
+		return getSeriesString().split("/")[0];
+	}
+	public String getParameter()
+	{
+		return getSeriesString().split("/")[1];
+	}
+
+	public String getSite()
+	{
+		return getSeriesString().split("/")[1];
+	}
+
+	public String getType()
+	{
+		return getSeriesString().split("/")[2];
+	}
+
+	public String getTimeStep()
+	{
+		return getSeriesString().split("/")[3];
+	}
+
+
 }
