@@ -32,7 +32,7 @@ public class TemplateUtil
 				try
 				{
 					List<String> rows = logParameters(executorService);
-					for (String row : rows)
+					for(String row : rows)
 					{
 						System.out.println(row);
 					}
@@ -54,7 +54,7 @@ public class TemplateUtil
 		TokenContainer token = TokenUtil.getToken();
 		List<TemplateWrapper> templateWrappers = retrieveTemplates(token);
 		final List<String> rows = new ArrayList<>();
-		rows.add("Template ID|Template|Measure|Parameter");
+		rows.add("Template ID|Template|Measure|Parameter|Interval|Processed");
 		List<Future> futures = new ArrayList<>();
 		for(TemplateWrapper template : templateWrappers)
 		{
@@ -66,16 +66,14 @@ public class TemplateUtil
 					List<MeasureWrapper> measureWrappers = retrieveMeasurements(token, template);
 					for(MeasureWrapper measure : measureWrappers)
 					{
-						String parameter = findParameter(measure);
-						String row = createCsvRow(template, measure, parameter);
-						rows.add(row);
+						rows.add(createCsvRow(template, measure));
 					}
 				}
 			};
 			Future<?> future = executorService.submit(runnable);
 			futures.add(future);
 		}
-		for (Future future : futures)
+		for(Future future : futures)
 		{
 			future.get();
 		}
@@ -121,14 +119,9 @@ public class TemplateUtil
 		return Collections.emptyList();
 	}
 
-	private static String findParameter(MeasureWrapper measure)
+	private static String createCsvRow(TemplateWrapper template, MeasureWrapper measure)
 	{
-		return measure.getSeriesString().split("/")[1];
-	}
-
-	private static String createCsvRow(TemplateWrapper template, MeasureWrapper measure, String parameter)
-	{
-		String row = template.getDprId() + "|" + template.getName() + "|" + measure.getSeriesString() + "|" + parameter;
+		String row = template.getDprId() + "|" + template.getName() + "|" + measure.getSeriesString() + "|" + measure.getParameter()+ "|" + measure.getTimeStep()+ "|" + measure.isProcessed();
 		return row;
 	}
 
