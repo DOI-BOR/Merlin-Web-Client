@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -23,6 +24,7 @@ public final class MerlinObjectMapper
 	{
 		OBJECT_MAPPER.findAndRegisterModules();
 		OBJECT_MAPPER.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
+		OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
 	public static <T> List<T> mapJsonToListOfObjectsUsingClass(String json, Class<T> classObject) throws IOException

@@ -10,6 +10,8 @@ package gov.usbr.wq.dataaccess.model;
 
 import gov.usbr.wq.dataaccess.json.Measure;
 
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -37,6 +39,28 @@ public final class MeasureWrapper
 	public Boolean isProcessed()
 	{
 		return _measure.isIsProcessed();
+	}
+
+	public ZonedDateTime getStart()
+	{
+		ZonedDateTime retVal = null;
+		OffsetDateTime start = _measure.getStart();
+		if(start != null)
+		{
+			retVal = start.toZonedDateTime();
+		}
+		return retVal;
+	}
+
+	public ZonedDateTime getEnd()
+	{
+		ZonedDateTime retVal = null;
+		OffsetDateTime end = _measure.getEnd();
+		if(end != null)
+		{
+			retVal = end.toZonedDateTime();
+		}
+		return retVal;
 	}
 
 	@Override
