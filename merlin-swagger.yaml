@@ -205,6 +205,12 @@ definitions:
         type: string
       isProcessed:
         type: boolean
+      start:
+        format: date-time
+        type: string
+      end:
+        format: date-time
+        type: string
   QualityVersions:
     type: object
     properties:

@@ -43,7 +43,7 @@ class DataWrapperTest
 		for (String tz : timeZones)
 		{
 			DataWrapper dataWrapper = builder.withTimeZone(tz).build();
-			tz = tz.replace(" ", " ");
+			tz = tz.replace(" ", "");
 			Assertions.assertEquals(ZoneId.of(tz),dataWrapper.getTimeZone());
 		}
 
@@ -65,7 +65,7 @@ class DataWrapperTest
 		{
 			DataWrapper dataWrapper = builder.withTimeZone(tz).build();
 			tz = tz.replace(" ", " ");
-			Assertions.assertEquals(ZoneId.of("UTC"),dataWrapper.getTimeZone());
+			Assertions.assertEquals(ZoneId.of("GMT"),dataWrapper.getTimeZone());
 		}
 
 	}
