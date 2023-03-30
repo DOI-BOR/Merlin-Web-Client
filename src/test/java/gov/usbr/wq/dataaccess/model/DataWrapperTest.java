@@ -23,8 +23,6 @@ class DataWrapperTest extends ModelTest
 		ZonedDateTime end = ZonedDateTime.parse("2020-01-02T00:00:00-08:00");
 		MeasureWrapper measureWrapper = new MeasureWrapperBuilder()
 				.withSeriesString("MR Sac.-Shasta Lake-Pit R. Branch-Montgomery Creek Flow/Flow/INST-VAL/1440/0/124-230.6.125.1.1")
-				.withStart(start)
-				.withEnd(end)
 				.build();
 		Integer qvId = 1;
 		MerlinTimeSeriesDataAccess dataAccess = new MerlinTimeSeriesDataAccess();
