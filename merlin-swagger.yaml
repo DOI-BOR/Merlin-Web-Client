@@ -211,6 +211,8 @@ definitions:
       end:
         format: date-time
         type: string
+      type:
+        type: string
   QualityVersions:
     type: object
     properties:

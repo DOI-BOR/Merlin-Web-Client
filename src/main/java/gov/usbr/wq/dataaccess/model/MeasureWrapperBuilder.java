@@ -11,6 +11,7 @@ public final class MeasureWrapperBuilder
     private String _typeId;
     private ZonedDateTime _start;
     private ZonedDateTime _end;
+    private String _type;
 
     public MeasureWrapperBuilder withSeriesString(String seriesString)
     {
@@ -42,6 +43,12 @@ public final class MeasureWrapperBuilder
         return this;
     }
 
+    public MeasureWrapperBuilder withType(String type)
+    {
+        _type = type;
+        return this;
+    }
+
     public MeasureWrapper build()
     {
         Measure measure = new Measure();
@@ -56,6 +63,7 @@ public final class MeasureWrapperBuilder
         {
             measure.setEnd(_end.toOffsetDateTime());
         }
+        measure.setType(_type);
         return new MeasureWrapper(measure);
     }
 }
