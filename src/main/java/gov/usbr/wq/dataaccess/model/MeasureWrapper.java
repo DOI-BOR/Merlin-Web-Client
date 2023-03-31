@@ -11,7 +11,6 @@ package gov.usbr.wq.dataaccess.model;
 import gov.usbr.wq.dataaccess.json.Measure;
 import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -27,13 +26,6 @@ public final class MeasureWrapper
 
 	public MeasureWrapper(Measure measure)
 	{
-		ZoneId nativeZoneId = ZoneId.of("GMT-08:00"); //This is what timezone merlin uses in their output, just can't get this off of the Measure json
-		OffsetDateTime start = measure.getStart();
-		OffsetDateTime end = measure.getEnd();
-		start = start.atZoneSameInstant(nativeZoneId).toOffsetDateTime();
-		end = end.atZoneSameInstant(nativeZoneId).toOffsetDateTime();
-		measure.setStart(start);
-		measure.setEnd(end);
 		_measure = measure;
 	}
 
@@ -50,6 +42,11 @@ public final class MeasureWrapper
 	public Boolean isProcessed()
 	{
 		return _measure.isIsProcessed();
+	}
+
+	public String getType()
+	{
+		return _measure.getType();
 	}
 
 	public ZonedDateTime getStart()
@@ -115,7 +112,7 @@ public final class MeasureWrapper
 		return getSeriesString().split("/")[1];
 	}
 
-	public String getType()
+	public String getTypeInSeriesString()
 	{
 		return getSeriesString().split("/")[2];
 	}

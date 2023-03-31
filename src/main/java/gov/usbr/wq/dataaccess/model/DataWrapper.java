@@ -45,10 +45,6 @@ public final class DataWrapper
 
 		if (data.getEvents() != null)
 		{
-			for(Event event : data.getEvents())
-			{
-				event.setDate(event.getDate().atZoneSameInstant(ZoneId.of(_data.getTimeZone())).toOffsetDateTime());
-			}
 			events = data.getEvents().stream()
 				.map(EventWrapper::new)
 				.collect(toList());

@@ -1,0 +1,26 @@
+[
+  {
+    "qvID": 0,
+    "qvName": "All",
+    "qvDescription": "All",
+    "qvActive": false,
+    "qvQueryHistory": false,
+    "qvUI": 0
+  },
+  {
+    "qvID": 1,
+    "qvName": "Boundary Condition",
+    "qvDescription": "Good Quality Data approved by User",
+    "qvActive": false,
+    "qvQueryHistory": false,
+    "qvUI": 0
+  },
+  {
+    "qvID": 2,
+    "qvName": "Validation/Calibration",
+    "qvDescription": "Goood Quality Original Data from source website",
+    "qvActive": false,
+    "qvQueryHistory": false,
+    "qvUI": 0
+  }
+]
