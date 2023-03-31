@@ -13,7 +13,6 @@ import gov.usbr.wq.dataaccess.mapper.MerlinObjectMapper;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -112,7 +111,7 @@ public final class MeasureWrapper
 		return getSeriesString().split("/")[1];
 	}
 
-	public String getTypeInSeriesString()
+	public String getSeriesType()
 	{
 		return getSeriesString().split("/")[2];
 	}
