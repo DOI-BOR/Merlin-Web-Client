@@ -43,6 +43,11 @@ public final class MeasureWrapper
 		return _measure.isIsProcessed();
 	}
 
+	public String getType()
+	{
+		return _measure.getType();
+	}
+
 	public ZonedDateTime getStart()
 	{
 		ZonedDateTime retVal = null;
@@ -106,7 +111,7 @@ public final class MeasureWrapper
 		return getSeriesString().split("/")[1];
 	}
 
-	public String getType()
+	public String getSeriesType()
 	{
 		return getSeriesString().split("/")[2];
 	}

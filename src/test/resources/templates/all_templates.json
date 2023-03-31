@@ -1,0 +1,206 @@
+[
+  {
+    "dprID": 115,
+    "dprName": "Sac._BC_Lewiston MET Data"
+  },
+  {
+    "dprID": 116,
+    "dprName": "Sac._BC_Trinity R. Flow"
+  },
+  {
+    "dprID": 117,
+    "dprName": "Sac._BC_Trinity R. WTemp"
+  },
+  {
+    "dprID": 118,
+    "dprName": "Sac._BC_Shasta Generation Release"
+  },
+  {
+    "dprID": 119,
+    "dprName": "Sac._BC_Shasta Spill Release"
+  },
+  {
+    "dprID": 120,
+    "dprName": "Sac._BC_Shasta Outlet Release Part1"
+  },
+  {
+    "dprID": 121,
+    "dprName": "Sac._BC_Shasta Outlet Release Part2"
+  },
+  {
+    "dprID": 122,
+    "dprName": "Sac._BC_Shasta Reservoir Data"
+  },
+  {
+    "dprID": 123,
+    "dprName": "Sac._BC_Shasta WTemp Profiles"
+  },
+  {
+    "dprID": 124,
+    "dprName": "Sac._BC_Shasta Boundary Flow"
+  },
+  {
+    "dprID": 125,
+    "dprName": "Sac._BC_Shasta Boundary WTemp"
+  },
+  {
+    "dprID": 126,
+    "dprName": "Sac._BC_Lewiston Flow"
+  },
+  {
+    "dprID": 127,
+    "dprName": "Sac._BC_Lewiston Reservoir Data"
+  },
+  {
+    "dprID": 128,
+    "dprName": "Sac._BC_Trinity Lake Reservoir Data"
+  },
+  {
+    "dprID": 129,
+    "dprName": "Sac._BC_Trinity Lake Outflow"
+  },
+  {
+    "dprID": 130,
+    "dprName": "Sac._BC_Keswick WTemp"
+  },
+  {
+    "dprID": 131,
+    "dprName": "Sac._BC_Whiskeytown Flow"
+  },
+  {
+    "dprID": 132,
+    "dprName": "Sac._BC_Whiskeytown WTemp"
+  },
+  {
+    "dprID": 133,
+    "dprName": "Sac._BC_Whiskeytown Reservoir Data"
+  },
+  {
+    "dprID": 134,
+    "dprName": "Sac._BC_Trinity Lake WTemp Profiles"
+  },
+  {
+    "dprID": 135,
+    "dprName": "Am._BC_Folsom Boundary Flow"
+  },
+  {
+    "dprID": 136,
+    "dprName": "Am._BC_Folsom Boundary WTemp"
+  },
+  {
+    "dprID": 137,
+    "dprName": "Am._BC_Folsom MET Data"
+  },
+  {
+    "dprID": 138,
+    "dprName": "Am._BC_Folsom Reservoir Data"
+  },
+  {
+    "dprID": 139,
+    "dprName": "Am._BC_Folsom Generation Release"
+  },
+  {
+    "dprID": 140,
+    "dprName": "Am._BC_Folsom Shutter Position"
+  },
+  {
+    "dprID": 141,
+    "dprName": "Am._BC_Folsom MI"
+  },
+  {
+    "dprID": 142,
+    "dprName": "Am._BC_Folsom Spill Release"
+  },
+  {
+    "dprID": 143,
+    "dprName": "Am._BC_Folsom Pumping Release"
+  },
+  {
+    "dprID": 144,
+    "dprName": "Am._BC_Folsom Outlet Release"
+  },
+  {
+    "dprID": 146,
+    "dprName": "Am._BC_Lower American River Flow"
+  },
+  {
+    "dprID": 147,
+    "dprName": "Am._BC_Lower American River MET Data"
+  },
+  {
+    "dprID": 148,
+    "dprName": "Am._BC_Natoma Lake Boundary Flow"
+  },
+  {
+    "dprID": 149,
+    "dprName": "Am._BC_Natoma Lake MET Data"
+  },
+  {
+    "dprID": 150,
+    "dprName": "Am._BC_Natoma Lake Reservoir Data"
+  },
+  {
+    "dprID": 151,
+    "dprName": "Am._BC_Natoma Lake Generation Release"
+  },
+  {
+    "dprID": 152,
+    "dprName": "Am._BC_Natoma Lake Spill Release"
+  },
+  {
+    "dprID": 158,
+    "dprName": "Sac._BC_Trinity R. MET Data"
+  },
+  {
+    "dprID": 162,
+    "dprName": "Sac._BC_Trinity Lake Inflow"
+  },
+  {
+    "dprID": 163,
+    "dprName": "Sac._BC_Trinity Lake Boundary WTemp"
+  },
+  {
+    "dprID": 164,
+    "dprName": "Sac._BC_Redding MET Data"
+  },
+  {
+    "dprID": 171,
+    "dprName": "Sac._BC_ClearCr_to_SacR Flow"
+  },
+  {
+    "dprID": 173,
+    "dprName": "Stan._BC_New Melones Reservoir Data"
+  },
+  {
+    "dprID": 174,
+    "dprName": "Stan._BC_New Melones Generation Release"
+  },
+  {
+    "dprID": 175,
+    "dprName": "Stan._BC_New Melones Outlet Release"
+  },
+  {
+    "dprID": 177,
+    "dprName": "Stan._BC_Tulloch Operation Data"
+  },
+  {
+    "dprID": 178,
+    "dprName": "Stan._BC_Goodwin Operation Data"
+  },
+  {
+    "dprID": 179,
+    "dprName": "Stan._BC_New Melones WTemp"
+  },
+  {
+    "dprID": 180,
+    "dprName": "Stan._BC_Tulloch WTemp"
+  },
+  {
+    "dprID": 181,
+    "dprName": "Stan._BC_Goodwin WTemp"
+  },
+  {
+    "dprID": 182,
+    "dprName": "Stan._BC_New Melones Inflow"
+  }
+]
