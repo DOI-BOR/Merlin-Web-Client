@@ -42,6 +42,7 @@ publishing {
     repositories {
         maven {
             credentials {
+			    //This username and password are not valid and will fail unless replaced by the user
                 username = project.hasProperty('rmaNexusUser') ? "$rmaNexusUser" : "defaultUser"
                 password = project.hasProperty('rmaNexusPassword') ? "$rmaNexusPassword" : "defaultPassword"
             }
